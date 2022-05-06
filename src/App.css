@@ -1,38 +1,178 @@
-.App {
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Montserrat:wght@500;600&display=swap');
+
+/* Theme */
+
+:root {
+  --hue1: 257;
+  --hue2: 47;
+  --bg-color: hsl(var(--hue1), 100%, 97%);
+  --main-color-1: hsl(var(--hue1), 100%, 60%);
+  --main-color-dark-1: hsl(var(--hue1), 69%, 50%);
+  --main-color-2: hsl(var(--hue2), 100%, 61%);
+  --main-color-dark-2: hsl(var(--hue2), 82%, 55%);
+  --bg-color-1: hsl(var(--hue1), 100%, 97%);
+  --bg-color-2: #fff;
+  --bg-color-3: hsl(var(--hue1), 100%, 98%);
+  --bg-color-transparent: rgba(255, 255, 255, 0.6);
+  --heading-color: hsl(var(--hue1), 61%, 24%);
+  --text-color: hsl(var(--hue1), 17%, 63%);
+  --section-padding: 7rem;
+}
+
+/* General  */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: var(--bg-color);
+  font-family: 'Montserrat', sans-serif;
+}
+
+::selection {
+  background-color: var(--main-color-1);
+  color: var(--bg-color);
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Header. */
+
+.header {
+  background-color: var(--bg-color-2);
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.flex-container {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+}
+
+.icon {
+  line-height: 2rem;
+  padding: 0.5rem 1rem;
+  color: var(--heading-color);
+  transition: 0.5s;
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -ms-transition: 0.5s;
+  -o-transition: 0.5s;
+  margin: 0 1rem;
+  cursor: pointer;
+}
+
+.icon:hover {
+  transform: scale(1.4);
+  -webkit-transform: scale(1.4);
+  -moz-transform: scale(1.4);
+  -ms-transform: scale(1.4);
+  -o-transform: scale(1.4);
+}
+
+.btn {
+  position: relative;
+  margin: 0 1rem;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background-color: var(--main-color-2);
+  transition: 0.3s ease-in-out;
+  -webkit-transition: 0.3s ease-in-out;
+  -moz-transition: 0.3s ease-in-out;
+  -ms-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+}
+
+.btn:hover::after {
+  width: 100%;
+  background-color: var(--main-color-2);
+}
+
+/* User logged Home */
+
+.logout-container {
+  background-color: var(--bg-color-2);
+}
+
+/* Navbar */
+
+.flex-container-nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #6d33ff;
+  color: #fff;
+}
+
+/* popup */
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
 }
 
-.App-link {
-  color: #61dafb;
+.popup-inner {
+  position: relative;
+  background-color: #fff;
+  width: 360px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.title-popup-btn {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 9px 11px;
+  background-color: #6d33ff;
+  color: #fff;
+}
+
+/* Expense */
+
+.input {
+  border: none;
+  outline: none;
+  flex: 1;
+  margin: 0 10px;
+  line-height: 20px;
+}
+
+.input-expense {
+  border-bottom: 2px dashed #ffd438;
+  font-size: 18px;
+  margin-top: 10px;
+  max-width: 100%;
+}
+
+.amount {
+  font-size: 30px;
+}
+
+.expense-container {
+  margin: 20px 5px;
+}
+
+.paid-by {
+  border-bottom: 2px dashed #6d33ff;
 }
