@@ -6,13 +6,7 @@ import Select from '@mui/material/Select'
 
 import BalanceIcon from '@mui/icons-material/Balance'
 
-// Store
-import useStore from '../../store/state'
-
-export default function BasicSelect() {
-  const percentage = useStore((state) => state.percentage)
-  const setPercentage = useStore((state) => state.setPercentage)
-
+export default function BasicSelect({ percentage, setPercentage }) {
   const handleChange = (event) => {
     setPercentage(event.target.value)
   }

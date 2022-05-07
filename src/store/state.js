@@ -7,8 +7,8 @@ const useStore = create((set) => ({
   setSocket: (socket) => set({ socket }),
   notifications: [],
   setNotifications: (notifications) => set({ notifications }),
-  percentage: 50,
-  setPercentage: (percentage) => set({ percentage }),
+  expenses: [],
+  setExpenses: (expenses) => set({ expenses }),
 }))
 
 export default useStore

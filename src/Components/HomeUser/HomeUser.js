@@ -22,34 +22,60 @@ import MainExpensivePopup from './MainExpensivePopup'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import SelectButtons from './SelectButtons'
 
+//service
+import ExpenseService from '../../services/expense'
+import Expenses from './Expenses'
+
 const HomeUser = () => {
   const [newExpense, setNewExpense] = useState(false)
 
   //socket
   const socket = useStore((state) => state.socket)
   const user = useStore((state) => state.user)
-  const [toUser, setToUser] = useState('')
 
   // usersDisconnectd
   const setNotification = useStore((state) => state.setNotifications)
   const notification = useStore((state) => state.notifications)
 
   //State to expensive
+  const [toUser, setToUser] = useState('')
   const [description, setDescription] = useState('')
-  const [amount, setAmount] = useState(0)
+  const [balance, setBalance] = useState(0)
   const [paidBy, setPaidBy] = useState('')
+  const [percentage, setPercentage] = useState(50)
+
+  //expensesState
+  const setExpenses = useStore((state) => state.setExpenses)
 
   useEffect(() => {
     console.log('Socket se cambio: ', socket)
     socket.on('getExpense', (data) => {
+      console.log('recibiendo bien la data:', data)
       setNotification([...notification, data])
     })
+    console.log('notificaciones: ', notification)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, notification])
 
-  // TODO: Ahora lo q me toca hacer es mostrar una notificaciion con un boton y asi eliminar mis notificaciones y mandar la aceptacion o rechazo de la nueva cuenta.
+  useEffect(() => {
+    socket.on('updatedExpenses', (data) => {
+      setExpenses((prev) => [...prev, data])
+    })
+  }, [setExpenses, socket]) //! Probar si con el setExpense no caigo en un loop infinito o se me actualiza en momentos q no quiera.
 
-  //! Puedo agregar un expensive solo o agregarlo a una cuenta. La opcion de la cuenta se habilita cuando tenga una cuenta.
+  useEffect(() => {
+    async function getExpenses() {
+      try {
+        const expenses = await ExpenseService.getAll()
+        setExpenses(expenses)
+        console.log(expenses)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getExpenses()
+  }, [setExpenses])
 
   // Styes
   const paperStyle = {
@@ -68,21 +94,67 @@ const HomeUser = () => {
     setNewExpense(true)
   }
 
-  const handleNewExpense = () => {
+  const handleNewExpense = async () => {
+    //! Puedo agregar un expensive solo o agregarlo a una cuenta. La opcion de la cuenta se habilita cuando tenga una cuenta.
+    // TODO: Crear aqui el newExpense con las cosas q se ingresaron
+    let formattedPaidBy = paidBy.split(',').map((user) => user.trim())
+    let debtors = toUser
+      .split(',')
+      .map((user) => user.trim())
+      .filter((user) => !formattedPaidBy.includes(user))
+
+    if (debtors.length === 0) {
+      alert('U must set the debtors')
+      return
+    }
+
+    const reciverUsers = formattedPaidBy
+      .concat(debtors)
+      .filter((u) => u !== user.username)
+
     socket.emit('newExpense', {
       senderUser: user.username,
       // ID para acomodar la key en las notificaciones.
       senderUserId: user.id,
-      description,
-      amount,
-      receiverUser: toUser,
+      recieverUsers: reciverUsers,
     })
     setNewExpense(false)
 
-    // TODO: Crear aqui el newExpense con las cosas q se ingresaron
+    const totalDebt = balance * (percentage / 100)
+    const totalPayed = balance - totalDebt
 
+    formattedPaidBy.map((paidBy, i, arr) => {
+      return (arr[i] = {
+        username: paidBy,
+        amount: totalPayed / formattedPaidBy.length,
+      })
+    })
+
+    debtors.map((debtor, i, arr) => {
+      return (arr[i] = { username: debtor, amount: totalDebt / debtors.length })
+    })
+
+    console.log('debtors: ', debtors, 'formattedPaidBy: ', formattedPaidBy)
+
+    try {
+      const newExpense = await ExpenseService.create({
+        description,
+        balance,
+        paidBy: formattedPaidBy,
+        debtors,
+      })
+      console.log(newExpense)
+    } catch (err) {
+      alert(`could not create new expense.`)
+      console.log(err)
+    }
     //? OJO: Cuando anada el expense, debo agregarlo tambien a cada uno de los usuarios q estan. Sean deudores o pagadores.
     // ! Para la actualizacion del estado en distintos puntos de la app, puedo mirar como lo hice en fullstackopen o tambien mandar un evento para q actualice el estado desde uno al otro.
+    setBalance(0)
+    setDescription('')
+    setToUser('')
+    setPaidBy('')
+    setPercentage(50)
   }
 
   // Crear un evento cuando se haga click. Se va e enviar el usuario q hizo click y tambien el usuario al q se le envia va a tomarse de un useState q va a ingresar el primer ususario q quiere crear una cuenta con esa persona
@@ -116,6 +188,8 @@ const HomeUser = () => {
                   <Button onClick={handleClick}>New expense</Button>
                 </Grid>
               </Grid>
+              <Divider />
+              <Expenses />
               <Grid>
                 <MainExpensivePopup trigger={newExpense}>
                   <Paper>
@@ -134,6 +208,7 @@ const HomeUser = () => {
                       className="input"
                       placeholder="Enter username"
                       value={toUser}
+                      required
                       onChange={(e) => setToUser(e.target.value)}
                     />
                   </Box>
@@ -154,6 +229,7 @@ const HomeUser = () => {
                       <Grid item xs={9}>
                         <Box
                           component={'input'}
+                          required
                           className="input input-expense"
                           placeholder="Description"
                           value={description}
@@ -161,11 +237,12 @@ const HomeUser = () => {
                         />
                         <Box
                           component={'input'}
+                          required
                           className="input input-expense amount"
                           placeholder="0"
                           type={'number'}
-                          value={amount}
-                          onChange={(e) => setAmount(e.target.value)}
+                          value={balance}
+                          onChange={(e) => setBalance(e.target.value)}
                         />
                       </Grid>
                     </Grid>
@@ -174,8 +251,9 @@ const HomeUser = () => {
                       <Box
                         component={'input'}
                         className="input input-expense paid-by"
-                        placeholder="Username"
+                        placeholder={user.username}
                         value={paidBy}
+                        required
                         onChange={(e) => setPaidBy(e.target.value)}
                       />
                     </Box>
@@ -191,7 +269,10 @@ const HomeUser = () => {
                         Split:
                       </Grid>
                       <Grid item xs={9}>
-                        <SelectButtons />
+                        <SelectButtons
+                          percentage={percentage}
+                          setPercentage={setPercentage}
+                        />
                       </Grid>
                     </Grid>
                   </Box>

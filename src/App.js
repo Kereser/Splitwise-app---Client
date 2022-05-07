@@ -25,7 +25,8 @@ function App() {
 
   useEffect(() => {
     socket?.emit('newUser', user.username)
-  }, [socket, user])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.username])
 
   return (
     <Container maxWidth={false}>

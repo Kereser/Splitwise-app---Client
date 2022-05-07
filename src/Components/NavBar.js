@@ -136,6 +136,18 @@ export default function NavBar() {
               </MenuItem>
             ))
           : null}
+        {notification.length > 0 ? (
+          <MenuItem>
+            <Button
+              size="small"
+              variant="contained"
+              style={btnStyle}
+              onClick={() => handleAccept()}
+            >
+              Accept All
+            </Button>
+          </MenuItem>
+        ) : null}
         <Divider />
         <MenuItem onClick={() => console.log('Sirve el click aqui')}>
           <ListItemIcon>
