@@ -48,10 +48,10 @@ const HomeUser = () => {
   const setExpenses = useStore((state) => state.setExpenses)
 
   useEffect(() => {
-    console.log('Socket se cambio: ', socket)
     socket.on('getExpense', (data) => {
-      console.log('recibiendo bien la data:', data)
-      setNotification([...notification, data])
+      console.log('Actualizando las notificaciones: ', data)
+      const newNotif = [...notification, ...data]
+      setNotification(newNotif)
     })
     console.log('notificaciones: ', notification)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -82,6 +82,7 @@ const HomeUser = () => {
     width: '100%',
     height: '90vh',
     padding: '0',
+    overflowY: 'scroll',
   }
 
   const gridStyle = {
@@ -112,6 +113,7 @@ const HomeUser = () => {
       .concat(debtors)
       .filter((u) => u !== user.username)
 
+    console.log(user, 'HOW MY USER IS')
     socket.emit('newExpense', {
       senderUser: user.username,
       // ID para acomodar la key en las notificaciones.

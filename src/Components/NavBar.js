@@ -52,8 +52,6 @@ export default function NavBar() {
 
   // const handleDecline = (notification) => {}
 
-  console.log(notification)
-
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -115,7 +113,7 @@ export default function NavBar() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         {notification.length > 0
-          ? notification.map((n, i) => (
+          ? notification?.map((n, i) => (
               //! Acomodar la key para no eliminar todad las notificaciones.
               <MenuItem key={i}>
                 <Paper align="center" elevation={0}>

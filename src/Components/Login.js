@@ -15,7 +15,7 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey'
 import { Link } from 'wouter'
 
 // Servicelogin
-import { login } from '../services/login'
+import loginService from '../services/login'
 
 // Store
 import useStore from '../store/state'
@@ -29,7 +29,8 @@ const Login = () => {
     e.preventDefault()
     console.log(username, password)
     try {
-      const userLogged = await login({ username, password })
+      const userLogged = await loginService.login({ username, password })
+      console.log('User logged: ', userLogged)
       alert(`User: ${userLogged.username} has been logged!`)
       setUser({ username: userLogged.username, id: userLogged.id })
     } catch (err) {
