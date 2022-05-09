@@ -15,18 +15,12 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import Logout from '@mui/icons-material/Logout'
 import { Button, Paper } from '@mui/material'
 
-//store
-import useStore from '../store/state'
-
-export default function NavBar() {
+export default function NavBar({ notifications, setNotifications }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
-  // const socket = useStore((state) => state.socket)
-  const notification = useStore((state) => state.notifications)
-  const setNotification = useStore((state) => state.setNotifications)
 
+  console.log(notifications)
   //? styles
-
   const avatarStyle = {
     backgroundColor: '#66b165',
   }
@@ -45,9 +39,16 @@ export default function NavBar() {
     setAnchorEl(null)
   }
 
-  const handleAccept = (notification) => {
+  const handleAcceptAll = () => {
     // const newNotis = notification.filter((n) => n.id !== notification.id)
-    setNotification([])
+    setNotifications([])
+  }
+
+  const handleAccept = (index) => {
+    const newNotis = notifications.filter((_n, i) =>
+      i === index ? false : true,
+    )
+    setNotifications(newNotis)
   }
 
   // const handleDecline = (notification) => {}
@@ -65,7 +66,7 @@ export default function NavBar() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            {notification.length > 0 ? (
+            {notifications.length > 0 ? (
               <Avatar sx={{ width: 32, height: 32 }} style={avatarStyle}>
                 <SettingsIcon />{' '}
               </Avatar>
@@ -112,8 +113,8 @@ export default function NavBar() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {notification.length > 0
-          ? notification?.map((n, i) => (
+        {notifications.length > 0
+          ? notifications?.map((n, i) => (
               //! Acomodar la key para no eliminar todad las notificaciones.
               <MenuItem key={i}>
                 <Paper align="center" elevation={0}>
@@ -126,7 +127,7 @@ export default function NavBar() {
                     size="small"
                     variant="contained"
                     style={btnStyle}
-                    onClick={() => handleAccept(n)}
+                    onClick={() => handleAccept(i)}
                   >
                     Accept
                   </Button>
@@ -134,13 +135,13 @@ export default function NavBar() {
               </MenuItem>
             ))
           : null}
-        {notification.length > 0 ? (
+        {notifications.length > 0 ? (
           <MenuItem>
             <Button
               size="small"
               variant="contained"
               style={btnStyle}
-              onClick={() => handleAccept()}
+              onClick={handleAcceptAll}
             >
               Accept All
             </Button>

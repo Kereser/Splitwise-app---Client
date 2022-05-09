@@ -17,6 +17,7 @@ import useStore from '../../store/state'
 //Components
 import NavBar from '../NavBar'
 import MainExpensivePopup from './MainExpensivePopup'
+import Expenses from './Expenses'
 
 //Mui icons
 import ReceiptIcon from '@mui/icons-material/Receipt'
@@ -24,18 +25,15 @@ import SelectButtons from './SelectButtons'
 
 //service
 import ExpenseService from '../../services/expense'
-import Expenses from './Expenses'
+import UserService from '../../services/user'
 
 const HomeUser = () => {
   const [newExpense, setNewExpense] = useState(false)
+  const [notifications, setNotifications] = useState([])
 
   //socket
   const socket = useStore((state) => state.socket)
   const user = useStore((state) => state.user)
-
-  // usersDisconnectd
-  const setNotification = useStore((state) => state.setNotifications)
-  const notification = useStore((state) => state.notifications)
 
   //State to expensive
   const [toUser, setToUser] = useState('')
@@ -44,38 +42,21 @@ const HomeUser = () => {
   const [paidBy, setPaidBy] = useState('')
   const [percentage, setPercentage] = useState(50)
 
-  //expensesState
+  // expensives
   const setExpenses = useStore((state) => state.setExpenses)
 
   useEffect(() => {
+    //! Revisar pq las notificaciones quedan como en memoria y no se eliminan como del todo. (Problema de rendimiento.)
+    //todo: Probar con el estadio (prev) => {} a ver q pasa con mi estado.
     socket.on('getExpense', (data) => {
       console.log('Actualizando las notificaciones: ', data)
-      const newNotif = [...notification, ...data]
-      setNotification(newNotif)
+      console.log('Notificaciones actuales: ', notifications)
+      setNotifications((prev) => [...prev, ...data])
+
+      //todo: cuando llegue la notificacion, conseguir el usuario q ya tendra el expense y simplemente actualizar el estado del expense.
     })
-    console.log('notificaciones: ', notification)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket, notification])
-
-  useEffect(() => {
-    socket.on('updatedExpenses', (data) => {
-      setExpenses((prev) => [...prev, data])
-    })
-  }, [setExpenses, socket]) //! Probar si con el setExpense no caigo en un loop infinito o se me actualiza en momentos q no quiera.
-
-  useEffect(() => {
-    async function getExpenses() {
-      try {
-        const expenses = await ExpenseService.getAll()
-        setExpenses(expenses)
-        console.log(expenses)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    getExpenses()
-  }, [setExpenses])
+  }, [socket])
 
   // Styes
   const paperStyle = {
@@ -113,7 +94,6 @@ const HomeUser = () => {
       .concat(debtors)
       .filter((u) => u !== user.username)
 
-    console.log(user, 'HOW MY USER IS')
     socket.emit('newExpense', {
       senderUser: user.username,
       // ID para acomodar la key en las notificaciones.
@@ -145,11 +125,30 @@ const HomeUser = () => {
         paidBy: formattedPaidBy,
         debtors,
       })
-      console.log(newExpense)
+
+      //! Cuando le llegue la notificacion busco al usuario especifico y seteo el state de las notificaciones a ese usuario.
+      //! El problema real es como actualizar el estado de los usuarios online a los q se les envia el expense.
+
+      // todo: cuando me llegue el new expense, me voy a ir a llamar a mi usuario y le saco los expenses y los actualizo con los q me lleguen.
+      // todo: aqui ya controle para actualizar mi usuario q esta enviando la notificacion y online.
+      if (newExpense) {
+        const updatedUser = await UserService.getOneUser(user.id)
+        console.log(updatedUser, 'updatedUser')
+        const expenses = updatedUser.expenses
+        setExpenses(expenses)
+      }
+
+      //! Agregar el expense al user q tengo.
+      // todo: Traer todos los usuarios en el expense y asi poder modificarlos para q tengan su notificacion.
+      //? Es mejor hacer toodo en el backend. Puedo enviar los nombres, en el backend los busco, agrego el expense a su lista de expenses y solo faltaria ver como actualizar a cada uno de usos ususarios para q se vea su nueva notificacion.
+      // todo: desde el backend puedo mandar un evento q se reciba en el componente expense q de hecho me puede traer el mismo usuario desde el evento.
+      //! NO DEBERIA PASAR NADA PQ VOY A TRAER EL USER, PERO NO LO CAMBIARIA POR EL ACUTAL. SOLO CAMBIARIA SUS EXPENSES.
     } catch (err) {
       alert(`could not create new expense.`)
       console.log(err)
     }
+
+    //! Me falta hacer el filtro para no poder enviar un expense a usuarios q no estan registrados.
     //? OJO: Cuando anada el expense, debo agregarlo tambien a cada uno de los usuarios q estan. Sean deudores o pagadores.
     // ! Para la actualizacion del estado en distintos puntos de la app, puedo mirar como lo hice en fullstackopen o tambien mandar un evento para q actualice el estado desde uno al otro.
     setBalance(0)
@@ -166,7 +165,10 @@ const HomeUser = () => {
   return (
     <Container maxWidth={false}>
       <Box className="flex-container-nav logout-container">
-        <NavBar />
+        <NavBar
+          notifications={notifications}
+          setNotifications={setNotifications}
+        />
       </Box>
       <Paper
         align="center"

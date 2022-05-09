@@ -24,6 +24,7 @@ const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const setUser = useStore((state) => state.setUser)
+  const setExpenses = useStore((state) => state.setExpenses)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -32,7 +33,8 @@ const Login = () => {
       const userLogged = await loginService.login({ username, password })
       console.log('User logged: ', userLogged)
       alert(`User: ${userLogged.username} has been logged!`)
-      setUser({ username: userLogged.username, id: userLogged.id })
+      setUser(userLogged)
+      setExpenses(userLogged.expenses)
     } catch (err) {
       console.log(err)
       alert('Wrong credentials')

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { create } from '../services/user'
+import UserService from '../services/user'
 
 import {
   Avatar,
@@ -43,9 +43,9 @@ const Signup = () => {
     e.preventDefault()
     console.log(username, password, name)
     try {
-      const user = await create({ username, password, name })
-      alert(`User: ${user.username} has been created!`)
-      setUser({ username: user.username, id: user.id })
+      const createdUser = await UserService.create({ username, password, name })
+      alert(`User: ${createdUser.username} has been created!`)
+      setUser(createdUser)
     } catch (err) {
       console.log(err)
       alert('User already exists')

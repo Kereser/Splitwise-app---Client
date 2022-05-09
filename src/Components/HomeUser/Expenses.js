@@ -4,6 +4,7 @@ import useStore from '../../store/state'
 
 function Expenses() {
   const expenses = useStore((state) => state.expenses)
+  // TODO: Aqui podria traer mas bien al user q esta actualmente logeado y de ahi sacar los expenses q tiene para mostrarlos dependiendo de su rol en el expense.
 
   if (expenses.length === 0) {
     return (

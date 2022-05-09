@@ -5,8 +5,6 @@ const useStore = create((set) => ({
   setUser: (user) => set({ user }),
   socket: null,
   setSocket: (socket) => set({ socket }),
-  notifications: [],
-  setNotifications: (notifications) => set({ notifications }),
   expenses: [],
   setExpenses: (expenses) => set({ expenses }),
 }))
