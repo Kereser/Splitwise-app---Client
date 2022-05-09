@@ -45,15 +45,24 @@ const HomeUser = () => {
   // expensives
   const setExpenses = useStore((state) => state.setExpenses)
 
+  console.log('My user in general: ', user)
   useEffect(() => {
     //! Revisar pq las notificaciones quedan como en memoria y no se eliminan como del todo. (Problema de rendimiento.)
     //todo: Probar con el estadio (prev) => {} a ver q pasa con mi estado.
     socket.on('getExpense', (data) => {
       console.log('Actualizando las notificaciones: ', data)
-      console.log('Notificaciones actuales: ', notifications)
       setNotifications((prev) => [...prev, ...data])
-
       //todo: cuando llegue la notificacion, conseguir el usuario q ya tendra el expense y simplemente actualizar el estado del expense.
+
+      console.log('My user in getExpense: ', user)
+      async function updateExpenses() {
+        const updatedUser = await UserService.getOneUser(user.id)
+        console.log(updatedUser, 'updatedUser')
+        const expenses = updatedUser.expenses
+        setExpenses(expenses)
+      }
+
+      updateExpenses()
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket])
@@ -89,18 +98,6 @@ const HomeUser = () => {
       alert('U must set the debtors')
       return
     }
-
-    const reciverUsers = formattedPaidBy
-      .concat(debtors)
-      .filter((u) => u !== user.username)
-
-    socket.emit('newExpense', {
-      senderUser: user.username,
-      // ID para acomodar la key en las notificaciones.
-      senderUserId: user.id,
-      recieverUsers: reciverUsers,
-    })
-    setNewExpense(false)
 
     const totalDebt = balance * (percentage / 100)
     const totalPayed = balance - totalDebt
@@ -148,6 +145,20 @@ const HomeUser = () => {
       console.log(err)
     }
 
+    //? Se hace toda la operacion del newexpense aqui porq necesito primero crear el expense antes de enviar el evento de que hay uno nuevo.
+    const reciverUsers = formattedPaidBy
+      .concat(debtors)
+      .map((u) => u.username)
+      .filter((u) => u !== user.username)
+
+    // Envio de new expense
+    socket.emit('newExpense', {
+      senderUser: user.username,
+      // ID para acomodar la key en las notificaciones.
+      senderUserId: user.id,
+      recieverUsers: reciverUsers,
+    })
+    setNewExpense(false)
     //! Me falta hacer el filtro para no poder enviar un expense a usuarios q no estan registrados.
     //? OJO: Cuando anada el expense, debo agregarlo tambien a cada uno de los usuarios q estan. Sean deudores o pagadores.
     // ! Para la actualizacion del estado en distintos puntos de la app, puedo mirar como lo hice en fullstackopen o tambien mandar un evento para q actualice el estado desde uno al otro.
