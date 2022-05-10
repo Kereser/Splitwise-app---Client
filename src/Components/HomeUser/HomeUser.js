@@ -17,7 +17,7 @@ import useStore from '../../store/state'
 //Components
 import NavBar from '../NavBar'
 import MainExpensivePopup from './MainExpensivePopup'
-import Expenses from './Expenses'
+import Expenses from './Expenses/Expenses'
 
 //Mui icons
 import ReceiptIcon from '@mui/icons-material/Receipt'
@@ -44,6 +44,10 @@ const HomeUser = () => {
 
   // expensives
   const setExpenses = useStore((state) => state.setExpenses)
+
+  // todo:  Si quisiera actualizar, tendria q enviar un evento al backend desde mi front con los nombres de los usuarios a actualizar.
+  //! basicamente es lo mismo q con las notificaciones pero con un evento q se llame updateExpense o algo asi. Pero por ahora debo darle prioridad a la parte del front y el poder debitar pagos parciales o totales.
+  // ? En el backend, podria enviar la info como a los q reciben el expense y quien lo mando tipo notificacion y asi cuando me llegue ese tipo de evento, actualizar el expense a los usuarios q les llego ese evento.]
 
   console.log('My user in general: ', user)
   useEffect(() => {
@@ -200,7 +204,9 @@ const HomeUser = () => {
                   All expenses
                 </Grid>
                 <Grid item xs={5}>
-                  <Button onClick={handleClick}>New expense</Button>
+                  <Button onClick={handleClick} size="small">
+                    New expense
+                  </Button>
                 </Grid>
               </Grid>
               <Divider />

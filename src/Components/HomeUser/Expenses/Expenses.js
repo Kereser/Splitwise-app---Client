@@ -1,6 +1,8 @@
 //mui Components
 import { Box } from '@mui/material'
-import useStore from '../../store/state'
+import React from 'react'
+import useStore from '../../../store/state'
+import Expense from './Expense'
 
 function Expenses() {
   const expenses = useStore((state) => state.expenses)
@@ -15,9 +17,16 @@ function Expenses() {
   } else {
     return (
       <Box>
-        {expenses.map((expense) => (
-          <Box key={expense.id}>{expense.description}</Box>
-        ))}
+        {expenses.map((expense) => {
+          console.log(expense.date.split('T')[0].split('-'))
+          console.log(expense)
+
+          return (
+            <Box key={expense.id}>
+              <Expense expense={expense} />
+            </Box>
+          )
+        })}
       </Box>
     )
   }

@@ -176,3 +176,44 @@ a {
 .paid-by {
   border-bottom: 2px dashed #6d33ff;
 }
+
+/* expenses */
+
+.expenses-grid {
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px 0 5px;
+}
+
+.expense-summary {
+  cursor: pointer;
+}
+
+.date {
+  color: #999;
+}
+
+.day {
+  font-size: 15px;
+}
+
+.month {
+  font-size: 7px;
+}
+
+.paidBy {
+  font-size: 10px;
+}
+
+.debtors {
+  font-size: 10px;
+}
+
+.amount {
+  font-size: 17px;
+}
+
+.amount span {
+  font-size: 13px;
+  margin: 0 2px;
+}

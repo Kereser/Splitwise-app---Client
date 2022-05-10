@@ -6,8 +6,8 @@ const create = async (expense) => {
   return res.data
 }
 
-const update = async (expense) => {
-  const res = await axios.put(BASE_URL, expense)
+const update = async (expense, id) => {
+  const res = await axios.put(`${BASE_URL}/${id}`, expense)
   return res.data
 }
 
