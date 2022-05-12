@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Montserrat:wght@500;600&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Oxygen:wght@300;400;700&display=swap');
 /* Theme */
 
 :root {
@@ -31,8 +30,9 @@
 
 body {
   overflow-x: hidden;
+  font-weight: 400;
   background-color: var(--bg-color);
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Oxygen', sans-serif;
 }
 
 ::selection {
@@ -42,6 +42,18 @@ body {
 
 a {
   text-decoration: none;
+}
+
+/* re-usable css */
+
+.title {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.btn-black {
+  color: #000;
+  font-weight: 400;
 }
 
 /* Header. */
@@ -117,6 +129,7 @@ a {
   align-items: center;
   background-color: #6d33ff;
   color: #fff;
+  padding: 0 13% 0 0;
 }
 
 /* popup */
@@ -203,14 +216,24 @@ a {
 
 .paidBy {
   font-size: 10px;
+  width: 110px;
+  text-align: right;
 }
 
 .debtors {
   font-size: 10px;
+  width: 110px;
+  text-align: left;
 }
 
-.amount {
+.amount-left {
   font-size: 17px;
+  text-align: left;
+}
+
+.amount-right {
+  font-size: 17px;
+  text-align: right;
 }
 
 .amount span {

@@ -1,33 +1,46 @@
 //mui Components
-import { Box } from '@mui/material'
-import React from 'react'
+import { Box, Divider, Typography } from '@mui/material'
+import React, { useState } from 'react'
 import useStore from '../../../store/state'
 import Expense from './Expense'
+import FilterExpenses from './FilterExpenses'
 
 function Expenses() {
-  const expenses = useStore((state) => state.expenses)
-  // TODO: Aqui podria traer mas bien al user q esta actualmente logeado y de ahi sacar los expenses q tiene para mostrarlos dependiendo de su rol en el expense.
+  const user = useStore((state) => state.user)
+  const [filter, setFilter] = useState('')
+
+  const expenses = user.expenses
+
+  let expensesToShow = expenses.filter((expense) => {
+    console.log(expense.description.includes(filter))
+    return expense.description.toLowerCase().startsWith(filter.toLowerCase())
+  })
+
+  console.log(expensesToShow, expenses)
 
   if (expenses.length === 0) {
     return (
       <Box>
-        <h1>No expenses yet.</h1>
+        <Typography variant="h4" style={{ margin: '50px 0' }}>
+          Add an expense to see it here!
+        </Typography>
       </Box>
     )
   } else {
     return (
-      <Box>
-        {expenses.map((expense) => {
-          console.log(expense.date.split('T')[0].split('-'))
-          console.log(expense)
-
-          return (
-            <Box key={expense.id}>
-              <Expense expense={expense} />
-            </Box>
-          )
-        })}
-      </Box>
+      <>
+        <FilterExpenses filter={filter} setFilter={setFilter} />
+        <Divider />
+        <Box>
+          {expensesToShow?.map((expense) => {
+            return (
+              <Box key={expense.id}>
+                <Expense expense={expense} />
+              </Box>
+            )
+          })}
+        </Box>
+      </>
     )
   }
 }

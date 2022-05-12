@@ -29,7 +29,7 @@ function App() {
   }, [user.username])
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={false} style={{ minWidth: '850px' }}>
       {user.username ? (
         <HomeUser />
       ) : (

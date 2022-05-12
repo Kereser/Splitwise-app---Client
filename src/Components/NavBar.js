@@ -56,7 +56,9 @@ export default function NavBar({ notifications, setNotifications }) {
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-        <Typography sx={{ minWidth: 100 }}>Home</Typography>
+        <Typography sx={{ minWidth: 100 }} className="title">
+          Home
+        </Typography>
         <Tooltip title="Notifications">
           <IconButton
             onClick={handleClick}
@@ -87,7 +89,7 @@ export default function NavBar({ notifications, setNotifications }) {
         PaperProps={{
           elevation: 0,
           sx: {
-            overflow: 'visible',
+            overflow: 'auto',
             filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
             mt: 1.5,
             '& .MuiAvatar-root': {

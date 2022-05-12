@@ -5,8 +5,6 @@ const useStore = create((set) => ({
   setUser: (user) => set({ user }),
   socket: null,
   setSocket: (socket) => set({ socket }),
-  expenses: [],
-  setExpenses: (expenses) => set({ expenses }),
 }))
 
 export default useStore
