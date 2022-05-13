@@ -1,39 +1,65 @@
 import React from 'react'
 
 //mui components
-import { ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { Stack, Divider } from '@mui/material'
+
+//mui icons
+import ListAltIcon from '@mui/icons-material/ListAlt'
+import PeopleIcon from '@mui/icons-material/People'
 
 //components
 import { Link } from 'wouter'
 
 function MainOptions() {
-  const [view, setView] = React.useState('web')
+  //Hacer mis propios botones y controlar su selected con la ruta actual
 
-  const handleChange = (event, newView) => {
-    setView(newView)
+  const stackStyle = {
+    margin: '10px 10px',
   }
 
+  const handleClick = (e) => {
+    const links = document.querySelectorAll('.link-btn')
+    console.log(links)
+    for (let i = 0; i < links.length; i++) {
+      links[i].classList.remove('selected-link')
+    }
+    e.target.className += ' selected-link'
+    console.log(e.target)
+  }
+
+  // remove.onclick = () => {
+  //   const el = document.querySelector('#el');
+  //   if (el.classList.contains("red")) {
+  //     el.classList.remove("red");
+
+  //   }
+  // }
+
   return (
-    <ToggleButtonGroup
-      color="primary"
-      value={view}
-      exclusive
-      orientation="vertical"
-      size="small"
-      onChange={handleChange}
+    <Stack
+      style={stackStyle}
+      spacing={0.5}
+      divider={<Divider orientation="horizontal" flexItem />}
     >
-      <ToggleButton value="Dashboard" size="small">
-        <Link href="Dashboard" className="btn-black">
-          Dashboard
-        </Link>
-      </ToggleButton>
-      ,
-      <ToggleButton value="Friends" variant="text" size="small">
-        <Link href="Friends" className="btn-black">
-          Friends
-        </Link>
-      </ToggleButton>
-    </ToggleButtonGroup>
+      <Link
+        href="Dashboard"
+        id="selected-link-dashboard"
+        className="link-btn"
+        onClick={handleClick}
+      >
+        <ListAltIcon sx={{ mr: 0.5, my: 0.1 }} />
+        Dashboard
+      </Link>
+      <Link
+        href="Friends"
+        className="link-btn"
+        id="selected-link-friends"
+        onClick={handleClick}
+      >
+        <PeopleIcon sx={{ mr: 0.5, my: 0.1, ml: 0.4 }} />
+        Friends
+      </Link>
+    </Stack>
   )
 }
 

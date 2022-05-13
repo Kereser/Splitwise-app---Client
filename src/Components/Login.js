@@ -24,7 +24,7 @@ const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const setUser = useStore((state) => state.setUser)
-  const [location, setLocation] = useLocation()
+  const [, setLocation] = useLocation()
 
   const handleSubmit = async (e) => {
     e.preventDefault()

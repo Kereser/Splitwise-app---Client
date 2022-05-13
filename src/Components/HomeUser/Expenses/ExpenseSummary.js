@@ -57,7 +57,9 @@ function ExpenseSummary({ expense, paidBy, debtors, user }) {
                 : `${paidBy[0].username} paid`}
             </Box>
             <Box className="amount-right">
-              <Box component={'span'}>$</Box>
+              <Box component={'span'} style={{ fontSize: '13px' }}>
+                $
+              </Box>
               {paidBy.map((u) => u.amount).reduce((acc, el) => acc + el, 0)}
             </Box>
           </Grid>
@@ -69,10 +71,21 @@ function ExpenseSummary({ expense, paidBy, debtors, user }) {
                 ? 'You lent'
                 : `${debtors[0].username} owes`}
             </Box>
-            <Box className="amount-left">
-              <Box component={'span'}>$</Box>
-              {debtors.map((u) => u.amount).reduce((acc, el) => acc + el, 0)}
-            </Box>
+            {!debtors.some((u) => u.username === user.username) ? (
+              <Box className="amount-left" style={{ color: '#5bc5a7' }}>
+                <Box component={'span'} style={{ fontSize: '13px' }}>
+                  $
+                </Box>
+                {debtors.map((u) => u.amount).reduce((acc, el) => acc + el, 0)}
+              </Box>
+            ) : (
+              <Box className="amount-left" style={{ color: '#ff652f' }}>
+                <Box component={'span'} style={{ fontSize: '13px' }}>
+                  $
+                </Box>
+                {debtors.map((u) => u.amount).reduce((acc, el) => acc + el, 0)}
+              </Box>
+            )}
           </Grid>
         </Grid>
       </Box>

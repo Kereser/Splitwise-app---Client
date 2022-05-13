@@ -20,7 +20,7 @@ import { Route, useLocation } from 'wouter'
 
 const HomeUser = () => {
   const [notifications, setNotifications] = useState([])
-  const [location, setLocation] = useLocation()
+  const [location] = useLocation()
 
   //store
   const user = useStore((state) => state.user)

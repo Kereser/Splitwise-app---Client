@@ -100,7 +100,7 @@ function ExpenseDetails({ debtors, user, expense }) {
             <Grid item style={{ lineHeight: '30px' }}>
               Your total amount to pay is:
             </Grid>
-            <Grid item>
+            <Grid item style={{ color: '#ff652f' }}>
               <Box component={'span'}>$</Box>
               {debtor[0].amount}
             </Grid>

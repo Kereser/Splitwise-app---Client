@@ -69,7 +69,6 @@ function PopupAddExpense({ newExpense, user, setNewExpense }) {
       // todo: aqui ya controle para actualizar mi usuario q esta enviando la notificacion y online.
       if (newExpense) {
         const updatedUser = await UserService.getOneUser(user.id)
-        console.log(updatedUser, 'updatedUser')
         setUser(updatedUser)
       }
     } catch (err) {
