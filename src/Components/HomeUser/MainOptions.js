@@ -1,22 +1,36 @@
 import React from 'react'
 
 //mui components
-import { Stack, Divider } from '@mui/material'
+import { Stack, Divider, Box } from '@mui/material'
 
 //mui icons
 import ListAltIcon from '@mui/icons-material/ListAlt'
-import PeopleIcon from '@mui/icons-material/People'
+import AddIcon from '@mui/icons-material/Add'
 
 //components
 import { Link } from 'wouter'
 
-function MainOptions() {
-  //Hacer mis propios botones y controlar su selected con la ruta actual
+//store
+import useStore from '../../store/state'
 
-  const stackStyle = {
+function MainOptions() {
+  const user = useStore((state) => state.user)
+  const friends = user.friends.map((friend) => friend.username)
+
+  //styles
+  const boxStyle = {
     margin: '10px 10px',
   }
 
+  const boxFlex = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    margin: '15px 0 0',
+    alignItems: 'flex-start',
+    borderRadius: '2px',
+  }
+
+  // event handlers
   const handleClick = (e) => {
     const links = document.querySelectorAll('.link-btn')
     console.log(links)
@@ -27,22 +41,10 @@ function MainOptions() {
     console.log(e.target)
   }
 
-  // remove.onclick = () => {
-  //   const el = document.querySelector('#el');
-  //   if (el.classList.contains("red")) {
-  //     el.classList.remove("red");
-
-  //   }
-  // }
-
   return (
-    <Stack
-      style={stackStyle}
-      spacing={0.5}
-      divider={<Divider orientation="horizontal" flexItem />}
-    >
+    <Box style={boxStyle}>
       <Link
-        href="Dashboard"
+        href="/Dashboard"
         id="selected-link-dashboard"
         className="link-btn"
         onClick={handleClick}
@@ -50,16 +52,30 @@ function MainOptions() {
         <ListAltIcon sx={{ mr: 0.5, my: 0.1 }} />
         Dashboard
       </Link>
-      <Link
-        href="Friends"
-        className="link-btn"
-        id="selected-link-friends"
-        onClick={handleClick}
+      <Box className="add-container" style={boxFlex}>
+        <Box style={{ marginBottom: '3px' }}>Friends</Box>
+        <Box className="add-btn">
+          <i class="fa-thin fa-plus"></i>add
+        </Box>
+      </Box>
+      <Stack
+        divider={<Divider orientation="horizontal" flexItem />}
+        spacing={0}
       >
-        <PeopleIcon sx={{ mr: 0.5, my: 0.1, ml: 0.4 }} />
-        Friends
-      </Link>
-    </Stack>
+        {friends.map((friend) => {
+          return (
+            <Link
+              href={`/Friends/${friend}`}
+              className="link-btn"
+              key={friend}
+              onClick={handleClick}
+            >
+              {friend}
+            </Link>
+          )
+        })}
+      </Stack>
+    </Box>
   )
 }
 

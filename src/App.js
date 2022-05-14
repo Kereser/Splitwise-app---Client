@@ -45,7 +45,7 @@ function App() {
                 <Link href="/" className="btn">
                   Home
                 </Link>
-                <Link href="login" className="btn">
+                <Link href="/login" className="btn">
                   Login
                 </Link>
                 <Link href="/signup" className="btn">

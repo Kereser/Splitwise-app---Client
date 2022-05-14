@@ -17,7 +17,7 @@ import SelectButtons from './SelectButtons'
 //store
 import useStore from '../../store/state'
 
-function PopupAddExpense({ newExpense, user, setNewExpense }) {
+function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
   //State to expensive
   const [toUser, setToUser] = useState('')
   const [description, setDescription] = useState('')
@@ -31,7 +31,10 @@ function PopupAddExpense({ newExpense, user, setNewExpense }) {
 
   const handleNewExpense = async () => {
     let formattedPaidBy = paidBy.split(',').map((user) => user.trim())
-    let debtors = toUser
+
+    const usersToDebtors = toUser === '' ? friend : toUser
+
+    let debtors = usersToDebtors
       .split(',')
       .map((user) => user.trim())
       .filter((user) => !formattedPaidBy.includes(user))
@@ -112,14 +115,24 @@ function PopupAddExpense({ newExpense, user, setNewExpense }) {
         }}
       >
         <Box component={'span'}>With you and: </Box>
-        <Box
-          component={'input'}
-          className="input"
-          placeholder="Enter username"
-          value={toUser}
-          required
-          onChange={(e) => setToUser(e.target.value)}
-        />
+        {friend ? (
+          <Box
+            component={'input'}
+            className="input"
+            defaultValue={friend}
+            required
+            disabled
+          />
+        ) : (
+          <Box
+            component={'input'}
+            className="input"
+            placeholder="Enter Username"
+            value={toUser}
+            required
+            onChange={(e) => setToUser(e.target.value)}
+          />
+        )}
       </Box>
       <Divider />
       <Box className="expense-container">

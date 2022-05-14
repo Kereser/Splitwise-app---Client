@@ -6,7 +6,7 @@ import { Grid, Button, Divider } from '@mui/material'
 import Expenses from './Expenses/Expenses'
 import PopupAddExpense from './PopupAddExpense'
 
-function Dashboard({ user }) {
+function Dashboard({ user, friend = null, filterByFriend = null }) {
   const [newExpense, setNewExpense] = useState(false)
 
   // event Handlers
@@ -27,7 +27,7 @@ function Dashboard({ user }) {
         }}
       >
         <Grid item className="title">
-          All expenses
+          {friend ? friend : 'All expenses'}
         </Grid>
         <Grid item>
           <Button onClick={handleClick} size="small">
@@ -36,11 +36,12 @@ function Dashboard({ user }) {
         </Grid>
       </Grid>
       <Divider />
-      <Expenses />
+      <Expenses filterByFriend={filterByFriend} />
       <Grid>
         <PopupAddExpense
           newExpense={newExpense}
           user={user}
+          friend={friend}
           setNewExpense={setNewExpense}
         />
       </Grid>

@@ -90,16 +90,16 @@ const HomeUser = () => {
         elevation={0}
       >
         <Grid container style={gridStyle}>
-          <Grid item xs={2}>
+          <Grid item xs={2.5}>
             <MainOptions />
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={7.5}>
             <Paper elevation={5} style={paperStyle} align="center">
               <Route path="/Dashboard">
                 <Dashboard user={user} />
               </Route>
-              <Route path="/Friends">
-                <Friends />
+              <Route path="/Friends/:friend">
+                {({ friend }) => <Friends friend={friend} />}
               </Route>
             </Paper>
           </Grid>
@@ -108,8 +108,6 @@ const HomeUser = () => {
           </Grid>
         </Grid>
       </Paper>
-
-      {/* routes */}
     </Container>
   )
 }

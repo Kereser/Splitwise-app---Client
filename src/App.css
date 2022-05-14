@@ -51,6 +51,11 @@ a {
   text-transform: uppercase;
 }
 
+.add-btn:hover {
+  cursor: pointer;
+  color: #5bc5a7;
+}
+
 /* Header. */
 
 .header {
@@ -211,13 +216,13 @@ a {
 
 .paidBy {
   font-size: 10px;
-  width: 110px;
+  width: 95px;
   text-align: right;
 }
 
 .debtors {
   font-size: 10px;
-  width: 110px;
+  width: 80px;
   text-align: left;
 }
 
@@ -244,8 +249,8 @@ a {
 }
 
 .link-btn:hover {
-  background-color: #eee;
-  color: #444;
+  background-color: #ccc;
+  color: #222;
   border-radius: 2px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -257,16 +262,13 @@ a {
   position: relative;
 }
 
-.selected-link:hover {
-  background-color: #eee;
-}
-
 .selected-link {
   color: #5bc5a7;
 }
 
 .selected-link:hover {
   color: #5bc5a7;
+  background-color: #ddd;
 }
 
 .selected-link::before {
@@ -282,4 +284,8 @@ a {
   -moz-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   -o-transform: translate(-50%, -50%);
+}
+
+.add-container:hover {
+  background-color: #ccc;
 }

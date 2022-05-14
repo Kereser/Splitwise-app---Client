@@ -69,6 +69,8 @@ function ExpenseSummary({ expense, paidBy, debtors, user }) {
                 ? `${debtors.length} owes`
                 : debtors[0].username === user.username
                 ? 'You lent'
+                : `${debtors[0].username} owes`.length > 13
+                ? `${debtors[0].username.slice(0, 13)}...`
                 : `${debtors[0].username} owes`}
             </Box>
             {!debtors.some((u) => u.username === user.username) ? (

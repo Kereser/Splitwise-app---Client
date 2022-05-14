@@ -1,32 +1,33 @@
 import React from 'react'
 
-//mui components
-import { Box, Typography } from '@mui/material'
-
 //store
 import useStore from '../../store/state'
 
-function Friends() {
-  const user = useStore((state) => state.user)
+//components
+import Dashboard from './Dashboard'
 
-  const friends = user.friends
+function Friends({ friend }) {
+  const user = useStore((state) => state.user)
+  const expenses = user.expenses
 
   //! Ver con q mas completo los datos en friends.
+  console.log(expenses)
 
-  if (friends.length === 0) {
-    return <Box>There are no friends to show.</Box>
-  } else {
-    return (
-      <>
-        {friends.map((friend) => (
-          <Box key={friend.id}>
-            {console.log(friend)}
-            <Typography variant="h4">{friend.username}</Typography>
-          </Box>
-        ))}
-      </>
-    )
-  }
+  let expensesToShow = []
+
+  expensesToShow = expenses.filter((expense) => {
+    const users = [...expense.paidBy, ...expense.debtors]
+    const usernames = users.map((user) => user.username)
+    console.log(usernames)
+    return usernames.includes(friend)
+  })
+
+  console.log(expensesToShow)
+  //? Sacar los expenses, revisar en q expense esta el usuario actual y el usuario especifico que visite y asi poner los expenses q comparte con el.
+
+  return (
+    <Dashboard user={user} friend={friend} filterByFriend={expensesToShow} />
+  )
 }
 
 export default Friends
