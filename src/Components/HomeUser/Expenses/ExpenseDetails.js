@@ -4,17 +4,18 @@ import React, { useState } from 'react'
 import useStore from '../../../store/state'
 
 //mui components
-import { Box, Grid, Divider, Button, Paper, Typography } from '@mui/material'
+import { Box, Grid, Divider, Button } from '@mui/material'
 
 //Services to update
 import UserService from '../../../services/user'
 import ExpenseService from '../../../services/expense'
 
 //component
-import MainExpensivePopup from '../MainExpensivePopup'
+import ParcialPaymentPopUp from './ParcialPaymentPopUp'
+import ExpenseDialog from './ExpenseDialog'
+import TransferDialog from './TransferDialog'
 
 function ExpenseDetails({ debtors, user, expense }) {
-  const [trigger, setTrigger] = useState(false)
   const [payment, setPayment] = useState(0)
 
   //store
@@ -27,9 +28,6 @@ function ExpenseDetails({ debtors, user, expense }) {
   }
 
   //handle events
-  const handlePartialTrigger = () => {
-    setTrigger(true)
-  }
 
   //! Desde aqui debo enviar un evento con un socket con todos los usuarios para q envie una senal de actualizacion de expenses a los usuarios online! NO SE HACE CON LOS OFFLINE pq a ellos cuando entren a la app ya van a tener actualizado el estado.
   const handlePartialPayment = async () => {
@@ -55,7 +53,6 @@ function ExpenseDetails({ debtors, user, expense }) {
     } catch (erro) {
       console.log('error: ', erro)
     }
-    setTrigger(false)
     setPayment(0)
   }
 
@@ -118,15 +115,18 @@ function ExpenseDetails({ debtors, user, expense }) {
             >
               Total pay
             </Button>
-            <Button
-              color="secondary"
-              size="small"
-              style={reBtnStyle}
-              disabled
-              onClick={handlePartialTrigger}
+            <ExpenseDialog
+              handlePartialPayment={handlePartialPayment}
+              debtor={debtor}
+              payment={payment}
+              setPayment={setPayment}
             >
-              Parcial pay
-            </Button>{' '}
+              <ParcialPaymentPopUp
+                debtor={debtor}
+                payment={payment}
+                setPayment={setPayment}
+              />
+            </ExpenseDialog>
           </>
         ) : (
           <>
@@ -139,69 +139,20 @@ function ExpenseDetails({ debtors, user, expense }) {
             >
               Total pay
             </Button>
-            <Button
-              color="secondary"
-              size="small"
-              style={reBtnStyle}
-              onClick={handlePartialTrigger}
+            <ExpenseDialog
+              handlePartialPayment={handlePartialPayment}
+              debtor={debtor}
+              payment={payment}
             >
-              Parcial pay
-            </Button>
+              <ParcialPaymentPopUp
+                debtor={debtor}
+                payment={payment}
+                setPayment={setPayment}
+              />
+            </ExpenseDialog>
+            <TransferDialog />
           </>
         )}
-        <MainExpensivePopup trigger={trigger}>
-          <Paper>
-            <Box className="title-popup-btn">Parcial payment</Box>
-          </Paper>
-          <Box style={{ margin: '15px 7px' }}>
-            <Box style={{ margin: '5px 0' }}>
-              Enter the value u want to pay:
-            </Box>
-            <Box
-              component={'input'}
-              className="input"
-              style={{ fontSize: '1.5rem', width: '58px' }}
-              placeholder={`${debtor[0].amount}`}
-              value={payment}
-              type="number"
-              min={0}
-              max={debtor[0].amount}
-              required
-              onChange={(e) => setPayment(e.target.value)}
-            />
-          </Box>
-          <Divider />
-          {payment > debtor[0].amount ? (
-            <>
-              <Typography variant="subtitle2">
-                You can't pay more than ${debtor[0].amount}
-              </Typography>
-              <Button
-                size="small"
-                style={reBtnStyle}
-                disabled
-                className="dsb-btn"
-              >
-                Accept
-              </Button>
-            </>
-          ) : (
-            <Button
-              size="small"
-              style={reBtnStyle}
-              onClick={handlePartialPayment}
-            >
-              Accept
-            </Button>
-          )}
-          <Button
-            size="small"
-            style={reBtnStyle}
-            onClick={() => setTrigger(false)}
-          >
-            Close
-          </Button>
-        </MainExpensivePopup>
       </>
     )
   } else {

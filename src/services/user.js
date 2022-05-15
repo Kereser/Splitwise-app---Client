@@ -6,7 +6,10 @@ const create = async (newUser) => {
   return res.data
 }
 
-const update = async (user) => {}
+const update = async (user, id) => {
+  const res = await axios.put(`${BASE_URL}/${id}`, user)
+  return res.data
+}
 
 const getOneUser = async (id) => {
   const res = await axios.get(`${BASE_URL}/${id}`)

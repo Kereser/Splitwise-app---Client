@@ -73,28 +73,29 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
       if (newExpense) {
         const updatedUser = await UserService.getOneUser(user.id)
         setUser(updatedUser)
+        console.log(updatedUser, 'updatedUser')
+
+        const reciverUsers = formattedPaidBy
+          .concat(debtors)
+          .map((u) => u.username)
+          .filter((u) => u !== user.username)
+
+        // Envio de new expense
+        socket.emit('newNotification', {
+          senderUser: user.username,
+          // ID para acomodar la key en las notificaciones.
+          senderUserId: user.id,
+          recieverUsers: reciverUsers,
+          expense: newExpense,
+        })
       }
     } catch (err) {
       alert(`could not create new expense.`)
       console.log(err)
     }
 
-    //? Se hace toda la operacion del newexpense aqui porq necesito primero crear el expense antes de enviar el evento de que hay uno nuevo.
-    const reciverUsers = formattedPaidBy
-      .concat(debtors)
-      .map((u) => u.username)
-      .filter((u) => u !== user.username)
-
-    // Envio de new expense
-    socket.emit('newExpense', {
-      senderUser: user.username,
-      // ID para acomodar la key en las notificaciones.
-      senderUserId: user.id,
-      recieverUsers: reciverUsers,
-    })
-    setNewExpense(false)
     //! Me falta hacer el filtro para no poder enviar un expense a usuarios q no estan registrados.
-    // ! Para la actualizacion del estado en distintos puntos de la app, puedo mirar como lo hice en fullstackopen o tambien mandar un evento para q actualice el estado desde uno al otro.
+    setNewExpense(false)
     setBalance(0)
     setDescription('')
     setToUser('')

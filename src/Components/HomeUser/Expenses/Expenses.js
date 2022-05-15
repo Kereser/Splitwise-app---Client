@@ -9,7 +9,11 @@ function Expenses({ filterByFriend = null }) {
   const user = useStore((state) => state.user)
   const [filter, setFilter] = useState('')
 
+  console.log(user, 'User en expenses')
+
   const expenses = filterByFriend ? filterByFriend : user.expenses
+
+  console.log(expenses, 'Expenses en expenses')
 
   let expensesToShow = expenses.filter((expense) => {
     console.log(expense.description.includes(filter))

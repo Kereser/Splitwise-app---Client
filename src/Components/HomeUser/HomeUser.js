@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
 //mui components
 import { Box, Container, Paper, Grid } from '@mui/material'
@@ -19,13 +19,13 @@ import UserService from '../../services/user'
 import { Route, useLocation } from 'wouter'
 
 const HomeUser = () => {
-  const [notifications, setNotifications] = useState([])
   const [location] = useLocation()
 
   //store
   const user = useStore((state) => state.user)
   const socket = useStore((state) => state.socket)
   const setUser = useStore((state) => state.setUser)
+  const notifications = user.notifications
 
   // todo:  Si quisiera actualizar, tendria q enviar un evento al backend desde mi front con los nombres de los usuarios a actualizar.
   //! basicamente es lo mismo q con las notificaciones pero con un evento q se llame updateExpense o algo asi. Pero por ahora debo darle prioridad a la parte del front y el poder debitar pagos parciales o totales.
@@ -33,11 +33,8 @@ const HomeUser = () => {
 
   console.log('My user in general: ', user)
   useEffect(() => {
-    socket.on('getExpense', (data) => {
-      console.log('Actualizando las notificaciones: ', data)
-      setNotifications((prev) => [...prev, ...data])
-
-      console.log('My user in getExpense: ', user)
+    socket.on('getNotification', (data) => {
+      console.log('My user in getNotification: ', user)
       // Actualizo los expenses del usuario q este online y le llegue la not de la new expense.
       async function updateExpenses() {
         const updatedUser = await UserService.getOneUser(user.id)
@@ -52,7 +49,7 @@ const HomeUser = () => {
 
   //Useeffect para actualizar las Expenses//Friens cuando visiste las pagins en cuestion
   useEffect(() => {
-    if (location === '/Dashboard' || location === '/Friends') {
+    if (location === '/Dashboard') {
       async function updateExpenses() {
         const updatedUser = await UserService.getOneUser(user.id)
         console.log(updatedUser, 'updatedUser')
@@ -63,6 +60,8 @@ const HomeUser = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
+
+  //! Puedo cargar aqui otro useEffect() para q me reciba le evento de actualizacion de usuario por aceptacion de deuda o q envia una notificacion por rechazo de la misma.
 
   //styles
   const paperStyle = {
@@ -79,10 +78,7 @@ const HomeUser = () => {
   return (
     <Container maxWidth={false}>
       <Box className="flex-container-nav logout-container">
-        <NavBar
-          notifications={notifications}
-          setNotifications={setNotifications}
-        />
+        <NavBar notifications={notifications} setUser={setUser} user={user} />
       </Box>
       <Paper
         align="center"

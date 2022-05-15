@@ -1,13 +1,17 @@
 import React from 'react'
-import Box from '@mui/material/Box'
-import Avatar from '@mui/material/Avatar'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
-import Tooltip from '@mui/material/Tooltip'
+
+//mui components
+import {
+  Box,
+  Avatar,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  Divider,
+  IconButton,
+  Typography,
+  Tooltip,
+} from '@mui/material'
 
 //icons
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -15,7 +19,10 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import Logout from '@mui/icons-material/Logout'
 import { Button, Paper } from '@mui/material'
 
-export default function NavBar({ notifications, setNotifications }) {
+//services
+import UserService from '../services/user'
+
+export default function NavBar({ notifications, user, setUser }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
 
@@ -40,15 +47,35 @@ export default function NavBar({ notifications, setNotifications }) {
   }
 
   const handleAcceptAll = () => {
-    // const newNotis = notification.filter((n) => n.id !== notification.id)
-    setNotifications([])
+    const confirm = window.confirm(
+      'You are about to accept all notifications, including those who ask u for transfer a debt \n\n Are you sure?',
+    )
+    if (confirm) {
+      setUser({ ...user, notifications: [] })
+    }
   }
 
-  const handleAccept = (index) => {
-    const newNotis = notifications.filter((_n, i) =>
-      i === index ? false : true,
-    )
-    setNotifications(newNotis)
+  const handleAccept = async (notif) => {
+    const originalNotis = user.notifications
+    console.log(user)
+    console.log('expense: ', notif)
+    const newNotis = originalNotis.filter((n) => {
+      return n.expense.id !== notif.expense.id
+    })
+    const newUser = { ...user, notifications: newNotis }
+
+    try {
+      const updatedUser = await UserService.update(newUser, user.id)
+
+      if (updatedUser) {
+        console.log(updatedUser, 'updatedUser')
+        setUser(updatedUser)
+      }
+    } catch (err) {
+      alert('Could not accept/delete notification sucessfully')
+      console.error(err)
+    }
+    //Este new user es el q debo enviar para actualizar en la base de datos y luego q me retorne le actualizado, setearlo.
   }
 
   // const handleDecline = (notification) => {}
@@ -129,7 +156,7 @@ export default function NavBar({ notifications, setNotifications }) {
                     size="small"
                     variant="contained"
                     style={btnStyle}
-                    onClick={() => handleAccept(i)}
+                    onClick={() => handleAccept(n)}
                   >
                     Accept
                   </Button>

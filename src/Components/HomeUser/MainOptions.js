@@ -5,7 +5,6 @@ import { Stack, Divider, Box } from '@mui/material'
 
 //mui icons
 import ListAltIcon from '@mui/icons-material/ListAlt'
-import AddIcon from '@mui/icons-material/Add'
 
 //components
 import { Link } from 'wouter'
@@ -55,7 +54,7 @@ function MainOptions() {
       <Box className="add-container" style={boxFlex}>
         <Box style={{ marginBottom: '3px' }}>Friends</Box>
         <Box className="add-btn">
-          <i class="fa-thin fa-plus"></i>add
+          <i className="fa-thin fa-plus"></i>add
         </Box>
       </Box>
       <Stack
