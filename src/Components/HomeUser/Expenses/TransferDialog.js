@@ -11,9 +11,13 @@ import {
   Divider,
 } from '@mui/material'
 
-function TransferDialog() {
+//store
+import useStore from '../../../store/state'
+
+function TransferDialog({ expense, user }) {
   const [open, setOpen] = useState(false)
   const [userToTransfer, setUserToTransfer] = useState('')
+  const socket = useStore((state) => state.socket)
 
   const handleClose = () => {
     setOpen(false)
@@ -21,6 +25,24 @@ function TransferDialog() {
 
   const handleClickOpen = () => {
     setOpen(true)
+  }
+
+  const handleTransfer = () => {
+    console.log(
+      'senderUser: ',
+      user.username,
+      'userwhorecieve: ',
+      userToTransfer,
+    )
+    socket.emit('newNotification', {
+      senderUser: { username: user.username, id: user.id },
+      recieverUsers: [userToTransfer],
+      expense,
+      transfer: true,
+    })
+    console.log('Mande el transfer')
+    setOpen(false)
+    setUserToTransfer('')
   }
 
   return (
@@ -51,7 +73,7 @@ function TransferDialog() {
         </DialogContent>
         <Divider />
         <DialogActions>
-          <Button onClick={handleClose}>Accept</Button>
+          <Button onClick={handleTransfer}>Accept</Button>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
       </Dialog>

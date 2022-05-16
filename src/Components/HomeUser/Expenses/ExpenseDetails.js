@@ -120,6 +120,7 @@ function ExpenseDetails({ debtors, user, expense }) {
               debtor={debtor}
               payment={payment}
               setPayment={setPayment}
+              disabled={true}
             >
               <ParcialPaymentPopUp
                 debtor={debtor}
@@ -150,7 +151,7 @@ function ExpenseDetails({ debtors, user, expense }) {
                 setPayment={setPayment}
               />
             </ExpenseDialog>
-            <TransferDialog />
+            <TransferDialog expense={expense} user={user} />
           </>
         )}
       </>

@@ -9,7 +9,13 @@ import {
   Typography,
 } from '@mui/material'
 
-function ExpenseDialog({ children, handlePartialPayment, debtor, payment }) {
+function ExpenseDialog({
+  children,
+  handlePartialPayment,
+  debtor,
+  payment,
+  disabled,
+}) {
   const [open, setOpen] = useState(false)
 
   const handleClickOpen = () => {
@@ -26,14 +32,26 @@ function ExpenseDialog({ children, handlePartialPayment, debtor, payment }) {
 
   return (
     <Box component={'span'}>
-      <Button
-        variant="contained"
-        size="small"
-        color="secondary"
-        onClick={handleClickOpen}
-      >
-        Parcial Pay
-      </Button>
+      {disabled ? (
+        <Button
+          variant="contained"
+          size="small"
+          color="secondary"
+          onClick={handleClickOpen}
+          disabled
+        >
+          Parcial Pay
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          size="small"
+          color="secondary"
+          onClick={handleClickOpen}
+        >
+          Parcial Pay
+        </Button>
+      )}
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>{children}</DialogContent>
         {payment > debtor[0].amount ? (

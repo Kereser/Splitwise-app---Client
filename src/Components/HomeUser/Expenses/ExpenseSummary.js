@@ -65,13 +65,39 @@ function ExpenseSummary({ expense, paidBy, debtors, user }) {
           </Grid>
           <Grid item style={{ margin: '0 0 0 10px' }}>
             <Box className="debtors">
-              {debtors.length > 1
-                ? `${debtors.length} owes`
+              {
+                debtors.length === 1
+                  ? debtors[0].username === user.username
+                    ? debtors.filter((d) => d.amount > 0).length === 0
+                      ? 'Totally paied'
+                      : 'You lent'
+                    : debtors.filter((d) => d.amount > 0).length === 0
+                    ? 'Totally paied'
+                    : `${debtors[0].username} owes`
+                  : `${
+                      debtors.filter((d) => d.amount > 0).length === 1
+                        ? debtors.filter((d) => d.amount > 0)[0].username ===
+                          user.username
+                          ? 'You lent'
+                          : `${
+                              debtors.filter((d) => d.amount > 0)[0].username
+                            } owes`
+                        : debtors.filter((d) => d.amount > 0).length === 0
+                        ? 'Totally paied'
+                        : `${debtors.filter((d) => d.amount > 0).length} owes`
+                    }`
+                /* {debtors.length > 1
+                ? `${
+                    debtors.filter((d) => d.amount > 0).length === 1
+                      ? debtors.filter((d) => d.amount > 0)[0].username
+                      : debtors.filter((d) => d.amount > 0).length
+                  } owes`
                 : debtors[0].username === user.username
                 ? 'You lent'
                 : `${debtors[0].username} owes`.length > 13
                 ? `${debtors[0].username.slice(0, 13)}...`
-                : `${debtors[0].username} owes`}
+                : `${debtors[0].username} owes`} */
+              }
             </Box>
             {!debtors.some((u) => u.username === user.username) ? (
               <Box className="amount-left" style={{ color: '#5bc5a7' }}>
