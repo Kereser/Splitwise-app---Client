@@ -21,7 +21,7 @@ function Dashboard({ user, friend = null, filterByFriend = null }) {
         style={{
           alignItems: 'center',
           backgroundColor: '#EEE',
-          height: '50px',
+          height: '35px',
           justifyContent: 'space-between',
           padding: '2px 20px',
         }}
@@ -30,7 +30,12 @@ function Dashboard({ user, friend = null, filterByFriend = null }) {
           {friend ? friend : 'All expenses'}
         </Grid>
         <Grid item>
-          <Button onClick={handleClick} size="small">
+          <Button
+            onClick={handleClick}
+            size="small"
+            variant="contained"
+            color="secondary"
+          >
             New expense
           </Button>
         </Grid>

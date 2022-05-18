@@ -18,7 +18,7 @@ function MainOptions() {
 
   //styles
   const boxStyle = {
-    margin: '10px 10px',
+    margin: ' 0 10px 10px 10px',
   }
 
   const boxFlex = {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 //mui components
 import {
@@ -32,7 +32,6 @@ const Login = () => {
     try {
       const userLogged = await loginService.login({ username, password })
       console.log('User logged: ', userLogged)
-      alert(`User: ${userLogged.username} has been logged!`)
       setLocation('/Dashboard')
       setUser(userLogged)
     } catch (err) {

@@ -13,11 +13,13 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 //State
 import useStore from '../store/state'
+import AlertComponent from './HomeUser/AlertComponent'
 
 const Signup = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const setAlert = useStore((state) => state.setAlert)
   const setUser = useStore((state) => state.setUser)
 
   const paperStyle = {
@@ -44,11 +46,15 @@ const Signup = () => {
     console.log(username, password, name)
     try {
       const createdUser = await UserService.create({ username, password, name })
-      alert(`User: ${createdUser.username} has been created!`)
       setUser(createdUser)
     } catch (err) {
-      console.log(err)
-      alert('User already exists')
+      console.error(err)
+      console.log('Entro al error')
+      setAlert({
+        trigger: true,
+        message: 'Could not create a new user because username already exists.',
+        type: 'error',
+      })
     }
     setName('')
     setUsername('')
@@ -118,6 +124,7 @@ const Signup = () => {
           </Grid>
         </Grid>
       </Paper>
+      <AlertComponent />
     </Grid>
   )
 }

@@ -28,6 +28,7 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
   //store
   const socket = useStore((state) => state.socket)
   const setUser = useStore((state) => state.setUser)
+  const setAlert = useStore((state) => state.setAlert)
 
   const handleNewExpense = async () => {
     let formattedPaidBy = paidBy.split(',').map((user) => user.trim())
@@ -40,7 +41,20 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
       .filter((user) => !formattedPaidBy.includes(user))
 
     if (debtors.length === 0) {
-      alert('U must set the debtors')
+      setAlert({
+        type: 'warning',
+        message: 'You must set at least one debtor',
+        trigger: true,
+      })
+      return
+    }
+
+    if (balance === 0) {
+      setAlert({
+        type: 'error',
+        message: 'You can not set a balance of 0',
+        trigger: true,
+      })
       return
     }
 
@@ -103,107 +117,109 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
   }
 
   return (
-    <MainExpensivePopup trigger={newExpense}>
-      <Paper>
-        <Box className="title-popup-btn">Add an expense</Box>
-      </Paper>
-      <Box
-        style={{
-          margin: '10px 5px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Box component={'span'}>With you and: </Box>
-        {friend ? (
-          <Box
-            component={'input'}
-            className="input"
-            defaultValue={friend}
-            required
-            disabled
-          />
-        ) : (
-          <Box
-            component={'input'}
-            className="input"
-            placeholder="Enter Username"
-            value={toUser}
-            required
-            onChange={(e) => setToUser(e.target.value)}
-          />
-        )}
-      </Box>
-      <Divider />
-      <Box className="expense-container">
-        <Grid
-          container
+    <Box>
+      <MainExpensivePopup trigger={newExpense}>
+        <Paper>
+          <Box className="title-popup-btn">Add an expense</Box>
+        </Paper>
+        <Box
           style={{
-            width: '80%',
+            margin: '10px 5px',
+            display: 'flex',
             alignItems: 'center',
           }}
         >
-          <Grid item xs={3}>
-            <Avatar>
-              <ReceiptIcon />
-            </Avatar>
-          </Grid>
-          <Grid item xs={9}>
+          <Box component={'span'}>With you and: </Box>
+          {friend ? (
             <Box
               component={'input'}
+              className="input"
+              defaultValue={friend}
               required
-              className="input input-expense"
-              placeholder="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              disabled
             />
+          ) : (
             <Box
               component={'input'}
+              className="input"
+              placeholder="Enter Username"
+              value={toUser}
               required
-              className="input input-expense amount"
-              placeholder="0"
-              type={'number'}
-              value={balance}
-              onChange={(e) => setBalance(e.target.value)}
+              onChange={(e) => setToUser(e.target.value)}
             />
-          </Grid>
-        </Grid>
-        <Box>
-          Paid by:{' '}
-          <Box
-            component={'input'}
-            className="input input-expense paid-by"
-            placeholder={user.username}
-            value={paidBy}
-            required
-            onChange={(e) => setPaidBy(e.target.value)}
-          />
+          )}
         </Box>
-        <Grid
-          container
-          style={{
-            width: '80%',
-            alignItems: 'center',
-            marginTop: '15px',
-          }}
-        >
-          <Grid item xs={3}>
-            Split:
+        <Divider />
+        <Box className="expense-container">
+          <Grid
+            container
+            style={{
+              width: '80%',
+              alignItems: 'center',
+            }}
+          >
+            <Grid item xs={3}>
+              <Avatar>
+                <ReceiptIcon />
+              </Avatar>
+            </Grid>
+            <Grid item xs={9}>
+              <Box
+                component={'input'}
+                required
+                className="input input-expense"
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+              <Box
+                component={'input'}
+                required
+                className="input input-expense amount"
+                placeholder="0"
+                type={'number'}
+                value={balance}
+                onChange={(e) => setBalance(e.target.value)}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={9}>
-            <SelectButtons
-              percentage={percentage}
-              setPercentage={setPercentage}
+          <Box>
+            Paid by:{' '}
+            <Box
+              component={'input'}
+              className="input input-expense paid-by"
+              placeholder={user.username}
+              value={paidBy}
+              required
+              onChange={(e) => setPaidBy(e.target.value)}
             />
+          </Box>
+          <Grid
+            container
+            style={{
+              width: '80%',
+              alignItems: 'center',
+              marginTop: '15px',
+            }}
+          >
+            <Grid item xs={3}>
+              Split:
+            </Grid>
+            <Grid item xs={9}>
+              <SelectButtons
+                percentage={percentage}
+                setPercentage={setPercentage}
+              />
+            </Grid>
           </Grid>
+        </Box>
+        <Divider />
+        <Grid container style={{ justifyContent: 'flex-end' }}>
+          <Button onClick={() => setNewExpense(false)}>Close</Button>
+          <Button onClick={handleNewExpense}>Save</Button>
         </Grid>
-      </Box>
-      <Divider />
-      <Grid container style={{ justifyContent: 'flex-end' }}>
-        <Button onClick={() => setNewExpense(false)}>Close</Button>
-        <Button onClick={handleNewExpense}>Save</Button>
-      </Grid>
-    </MainExpensivePopup>
+      </MainExpensivePopup>
+    </Box>
   )
 }
 

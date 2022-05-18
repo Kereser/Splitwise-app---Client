@@ -26,8 +26,12 @@ import ExpenseService from '../services/expense'
 //store
 import useStore from '../store/state'
 
+//wouter
+import { useLocation } from 'wouter'
+
 export default function NavBar({ notifications, user, setUser }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [, setLocation] = useLocation()
   const socket = useStore((state) => state.socket)
   const open = Boolean(anchorEl)
 
@@ -42,6 +46,10 @@ export default function NavBar({ notifications, user, setUser }) {
   }
 
   //Event handlers
+  const handleLogOut = () => {
+    setLocation('/login')
+    setUser({})
+  }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -227,6 +235,9 @@ export default function NavBar({ notifications, user, setUser }) {
         user.notifications = user.notifications.filter(
           (not) => not.expense.id !== expenseId,
         )
+        user.preferences = user.preferences.filter((p) => {
+          return p.expense.id !== expenseId
+        })
         console.log('Updated Expense', updatedExpense)
         user.expenses = user.expenses.concat(updatedExpense)
         const updatedUser = await UserService.update(user, user.id)
@@ -245,30 +256,44 @@ export default function NavBar({ notifications, user, setUser }) {
     })
   }
 
-  //logic to handleTransfer
+  //Styles
+  const paperStyle = {
+    width: '100%',
+    height: '100%',
+  }
+
+  const boxStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-        <Typography sx={{ minWidth: 100 }} className="title">
-          Home
+        <Typography
+          sx={{ maxWidth: '100%' }}
+          className="title"
+          variant="subtitle2"
+        >
+          {user.name}
         </Typography>
         <Tooltip title="Notifications">
           <IconButton
             onClick={handleClick}
             size="small"
-            sx={{ ml: 2 }}
+            sx={{ ml: 1 }}
             aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
             {notifications.length > 0 ? (
-              <Avatar sx={{ width: 32, height: 32 }} style={avatarStyle}>
-                <SettingsIcon />{' '}
+              <Avatar sx={{ width: 20, height: 20 }} style={avatarStyle}>
+                <SettingsIcon sx={{ width: 15, height: 15 }} />{' '}
               </Avatar>
             ) : (
-              <Avatar sx={{ width: 32, height: 32 }}>
-                <SettingsIcon />{' '}
+              <Avatar sx={{ width: 20, height: 20 }}>
+                <SettingsIcon sx={{ width: 15, height: 15 }} />{' '}
               </Avatar>
             )}
           </IconButton>
@@ -311,25 +336,26 @@ export default function NavBar({ notifications, user, setUser }) {
       >
         {notifications.length > 0
           ? notifications?.map((n, i) => (
-              <MenuItem key={i}>
-                <Paper align="center" elevation={0}>
-                  <ListItemIcon>
-                    <NotificationsIcon fontSize="small" />
-                  </ListItemIcon>
-                  {console.log(n, 'NOTIFICATION')}
-                  {n.transfer
-                    ? `${
-                        n.senderUser.username
-                      } wants to transfer you a debt of: \n$${
-                        n.expense.debtors.filter(
-                          (e) => e.username === n.senderUser.username,
-                        )[0]?.amount
-                      }`
-                    : n.acceptTransfer === null
-                    ? `${n.senderUser.username} has created a new expense with u`
-                    : n.acceptTransfer
-                    ? `${n.senderUser.username} has accept your debt transfer`
-                    : `${n.senderUser.username} has reject your debt transfer`}
+              <MenuItem key={i} style={{ padding: '5px 12px' }}>
+                <Paper align="center" elevation={0} style={paperStyle}>
+                  <Box style={boxStyle}>
+                    <ListItemIcon style={{ alignItems: 'flex-end' }}>
+                      <NotificationsIcon fontSize="small" />
+                    </ListItemIcon>
+                    {n.transfer
+                      ? `${
+                          n.senderUser.username
+                        } wants to transfer you a debt of: \n$${
+                          n.expense.debtors.filter(
+                            (e) => e.username === n.senderUser.username,
+                          )[0]?.amount
+                        }`
+                      : n.acceptTransfer === null
+                      ? `${n.senderUser.username} has created a new expense with u`
+                      : n.acceptTransfer
+                      ? `${n.senderUser.username} has accept your debt transfer`
+                      : `${n.senderUser.username} has reject your debt transfer`}
+                  </Box>
                   <Divider style={{ margin: '5px 0' }} />
                   {n.transfer ? (
                     <>
@@ -369,7 +395,9 @@ export default function NavBar({ notifications, user, setUser }) {
             <Button
               size="small"
               variant="contained"
-              style={btnStyle}
+              style={{
+                margin: '0 8px 0 8px',
+              }}
               onClick={handleAcceptAll}
             >
               Accept All
@@ -377,7 +405,7 @@ export default function NavBar({ notifications, user, setUser }) {
           </MenuItem>
         ) : null}
         <Divider />
-        <MenuItem onClick={() => console.log('Sirve el click aqui')}>
+        <MenuItem onClick={handleLogOut}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

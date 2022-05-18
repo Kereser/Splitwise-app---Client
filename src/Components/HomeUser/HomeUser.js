@@ -1,5 +1,8 @@
 import { useEffect } from 'react'
 
+//components
+import AlertComponent from './AlertComponent'
+
 //mui components
 import { Box, Container, Paper, Grid } from '@mui/material'
 
@@ -25,6 +28,7 @@ const HomeUser = () => {
   const user = useStore((state) => state.user)
   const socket = useStore((state) => state.socket)
   const setUser = useStore((state) => state.setUser)
+  const setAlert = useStore((state) => state.setAlert)
   const notifications = user.notifications
 
   // todo:  Si quisiera actualizar, tendria q enviar un evento al backend desde mi front con los nombres de los usuarios a actualizar.
@@ -61,6 +65,16 @@ const HomeUser = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
+  useEffect(() => {
+    setAlert({
+      type: 'success',
+      message: 'successfully logged in',
+      trigger: true,
+      user,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   //! Puedo cargar aqui otro useEffect() para q me reciba le evento de actualizacion de usuario por aceptacion de deuda o q envia una notificacion por rechazo de la misma.
 
   //styles
@@ -69,6 +83,7 @@ const HomeUser = () => {
     height: '90vh',
     padding: '0',
     overflowY: 'auto',
+    borderRadius: '5px',
   }
 
   const gridStyle = {
@@ -104,6 +119,7 @@ const HomeUser = () => {
           </Grid>
         </Grid>
       </Paper>
+      <AlertComponent />
     </Container>
   )
 }

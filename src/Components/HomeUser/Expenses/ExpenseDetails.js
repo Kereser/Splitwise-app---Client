@@ -14,6 +14,7 @@ import ExpenseService from '../../../services/expense'
 import ParcialPaymentPopUp from './ParcialPaymentPopUp'
 import ExpenseDialog from './ExpenseDialog'
 import TransferDialog from './TransferDialog'
+import Categorization from './Categorization'
 
 function ExpenseDetails({ debtors, user, expense }) {
   const [payment, setPayment] = useState(0)
@@ -86,6 +87,8 @@ function ExpenseDetails({ debtors, user, expense }) {
     }
   }
 
+  //! Crear componente para la adicion de preferencias por cada uno de los usuarios q obvio cada expense pueda tener su propia categoria.
+  //? Me toca igualmente aplicar algo de logica y llamadas a servicios para ver si la nota ya esta seteada como algo, si no, pues poner la respuesta por defecto.
   if (debtors.map((u) => u.username).includes(user.username)) {
     return (
       <>
@@ -152,12 +155,18 @@ function ExpenseDetails({ debtors, user, expense }) {
               />
             </ExpenseDialog>
             <TransferDialog expense={expense} user={user} />
+            <Divider style={{ margin: '10px 0' }} />
+            <Categorization expense={expense} user={user} />
           </>
         )}
       </>
     )
   } else {
-    return <Box>You owe nothing in this expense.</Box>
+    return (
+      <Box>
+        <Categorization expense={expense} user={user} />
+      </Box>
+    )
   }
 }
 

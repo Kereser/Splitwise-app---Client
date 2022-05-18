@@ -31,7 +31,7 @@ function ExpenseSummary({ expense, paidBy, debtors, user }) {
           <Grid
             item
             style={{
-              margin: '0 5px ',
+              margin: '0 0 0 5px',
               display: 'flex',
               alignItems: 'center',
             }}

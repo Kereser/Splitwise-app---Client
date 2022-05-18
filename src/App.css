@@ -49,6 +49,7 @@ a {
 .title {
   font-weight: 700;
   text-transform: uppercase;
+  font-size: 15;
 }
 
 .add-btn:hover {
@@ -130,6 +131,7 @@ a {
   background-color: #6d33ff;
   color: #fff;
   padding: 0 13% 0 0;
+  margin: 2px 0 10px 0;
 }
 
 /* popup */
@@ -288,4 +290,22 @@ a {
 
 .add-container:hover {
   background-color: #ccc;
+}
+
+/* Category */
+
+.category-span-grey {
+  color: #999;
+}
+
+.category-span-red {
+  color: #ff3838;
+}
+
+.category-span-green {
+  color: #5bc5a7;
+}
+
+.category-span-orange {
+  color: #ff9f1c;
 }

@@ -1,5 +1,5 @@
 //mui Components
-import { Box, Divider, Typography } from '@mui/material'
+import { Box, Divider, Paper, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import useStore from '../../../store/state'
 import Expense from './Expense'
@@ -33,7 +33,7 @@ function Expenses({ filterByFriend = null }) {
       <>
         <FilterExpenses filter={filter} setFilter={setFilter} />
         <Divider />
-        <Box>
+        <Paper style={{ margin: '0 10px' }}>
           {expensesToShow?.map((expense) => {
             return (
               <Box key={expense.id}>
@@ -41,7 +41,7 @@ function Expenses({ filterByFriend = null }) {
               </Box>
             )
           })}
-        </Box>
+        </Paper>
       </>
     )
   }
