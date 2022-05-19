@@ -1,5 +1,5 @@
 import axios from 'axios'
-const BASE_URL = 'http://localhost:3001/expenses'
+const BASE_URL = '/api/expenses'
 
 const create = async (expense) => {
   const res = await axios.post(BASE_URL, expense)
