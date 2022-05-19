@@ -19,7 +19,7 @@ function App() {
   const setSocket = useStore((state) => state.setSocket)
 
   useEffect(() => {
-    setSocket(io('http://localhost:3001'))
+    setSocket(io())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
