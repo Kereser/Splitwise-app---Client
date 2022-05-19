@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState } from 'react'
 
 //mui components
 import { Stack, Divider, Box } from '@mui/material'
@@ -11,10 +11,12 @@ import { Link } from 'wouter'
 
 //store
 import useStore from '../../store/state'
+import FriendDialog from './FriendDialog'
 
 function MainOptions() {
+  const [open, setOpen] = useState(false)
   const user = useStore((state) => state.user)
-  const friends = user.friends.map((friend) => friend.username)
+  const friends = user.friends.map((friend) => friend?.username)
 
   //styles
   const boxStyle = {
@@ -40,6 +42,10 @@ function MainOptions() {
     console.log(e.target)
   }
 
+  const handleAddFriend = () => {
+    setOpen(true)
+  }
+
   return (
     <Box style={boxStyle}>
       <Link
@@ -53,7 +59,7 @@ function MainOptions() {
       </Link>
       <Box className="add-container" style={boxFlex}>
         <Box style={{ marginBottom: '3px' }}>Friends</Box>
-        <Box className="add-btn">
+        <Box className="add-btn" onClick={handleAddFriend}>
           <i className="fa-thin fa-plus"></i>add
         </Box>
       </Box>
@@ -74,6 +80,7 @@ function MainOptions() {
           )
         })}
       </Stack>
+      <FriendDialog open={open} setOpen={setOpen} user={user} />
     </Box>
   )
 }

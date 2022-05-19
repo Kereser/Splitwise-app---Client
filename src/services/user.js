@@ -16,5 +16,10 @@ const getOneUser = async (id) => {
   return res.data
 }
 
+const getAll = async () => {
+  const res = await axios.get(BASE_URL)
+  return res.data
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { create, update, getOneUser }
+export default { create, update, getOneUser, getAll }

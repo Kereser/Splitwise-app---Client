@@ -14,10 +14,14 @@ import {
 //store
 import useStore from '../../../store/state'
 
+//service
+import UserService from '../../../services/user'
+
 function TransferDialog({ expense, user }) {
   const [open, setOpen] = useState(false)
   const [userToTransfer, setUserToTransfer] = useState('')
   const socket = useStore((state) => state.socket)
+  const setAlert = useStore((state) => state.setAlert)
 
   const handleClose = () => {
     setOpen(false)
@@ -27,20 +31,29 @@ function TransferDialog({ expense, user }) {
     setOpen(true)
   }
 
-  const handleTransfer = () => {
-    console.log(
-      'senderUser: ',
-      user.username,
-      'userwhorecieve: ',
-      userToTransfer,
-    )
-    socket.emit('newNotification', {
-      senderUser: { username: user.username, id: user.id },
-      recieverUsers: [userToTransfer],
-      expense,
-      transfer: true,
-    })
-    console.log('Mande el transfer')
+  const handleTransfer = async () => {
+    try {
+      const totalUsers = await UserService.getAll()
+      const totalUsernames = totalUsers.map((u) => u.username)
+
+      if (!totalUsernames.includes(userToTransfer)) {
+        setUserToTransfer('')
+        setAlert({
+          type: 'error',
+          message: "Username doesn't exist in database",
+          trigger: true,
+        })
+        return
+      }
+      socket.emit('newNotification', {
+        senderUser: { username: user.username, id: user.id },
+        recieverUsers: [userToTransfer],
+        expense,
+        transfer: true,
+      })
+    } catch (err) {
+      console.error(err)
+    }
     setOpen(false)
     setUserToTransfer('')
   }

@@ -33,27 +33,29 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
   const setExpensesAtStart = useStore((state) => state.setExpensesAtStart)
 
   const handleNewExpense = async () => {
+    try {
+      const totalUsers = await UserService.getAll()
+      const totalUsernames = totalUsers.map((u) => u.username)
+
+      if (
+        !totalUsernames.includes(toUser) ||
+        !totalUsernames.includes(paidBy)
+      ) {
+        setAlert({
+          type: 'error',
+          message: "Username doesn't exist in database",
+          trigger: true,
+        })
+        return
+      }
+    } catch (err) {
+      console.error(err)
+    }
+
     if (paidBy.length === 0 || toUser.length === 0) {
       setAlert({
         type: 'warning',
         message: 'You must set debtors and payers',
-        trigger: true,
-      })
-      return
-    }
-    let formattedPaidBy = paidBy.split(',').map((user) => user.trim())
-
-    const usersToDebtors = toUser === '' ? friend : toUser
-
-    let debtors = usersToDebtors
-      .split(',')
-      .map((user) => user.trim())
-      .filter((user) => !formattedPaidBy.includes(user))
-
-    if (debtors.length === 0) {
-      setAlert({
-        type: 'warning',
-        message: 'You must set at least one debtor',
         trigger: true,
       })
       return
@@ -63,6 +65,22 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
       setAlert({
         type: 'error',
         message: 'You can not set a balance of 0',
+        trigger: true,
+      })
+      return
+    }
+
+    let formattedPaidBy = paidBy.split(',').map((user) => user.trim())
+    const usersToDebtors = toUser === '' ? friend : toUser
+    let debtors = usersToDebtors
+      .split(',')
+      .map((user) => user.trim())
+      .filter((user) => !formattedPaidBy.includes(user))
+
+    if (debtors.length === 0) {
+      setAlert({
+        type: 'warning',
+        message: 'You must set at least one debtor',
         trigger: true,
       })
       return
