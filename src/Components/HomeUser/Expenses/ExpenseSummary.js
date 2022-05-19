@@ -1,7 +1,12 @@
 //mui components
 import { Grid, Box } from '@mui/material'
 
-function ExpenseSummary({ expense, paidBy, debtors, user }) {
+//store
+import useStore from '../../../store/state'
+
+function ExpenseSummary({ expense, paidBy, debtors, user, rate }) {
+  const toCurrency = useStore((state) => state.toCurrency)
+
   const months = {
     1: 'Enero',
     2: 'Febrero',
@@ -19,6 +24,15 @@ function ExpenseSummary({ expense, paidBy, debtors, user }) {
 
   const month = months[parseInt(expense.date.split('T')[0].split('-')[1])]
   const day = expense.date.split('T')[0].split('-')[2]
+
+  const payersAmount = (
+    paidBy.map((u) => u.amount).reduce((acc, el) => acc + el, 0) * rate
+  ).toFixed(1)
+  const debtorsAmount = (
+    debtors.map((u) => u.amount).reduce((acc, el) => acc + el, 0) * rate
+  ).toFixed(1)
+
+  const symbolToShow = toCurrency === 'EUR' ? '€' : '$'
 
   return (
     <Grid container className="expenses-grid" style={{ padding: '0 0 0 5px' }}>
@@ -58,60 +72,53 @@ function ExpenseSummary({ expense, paidBy, debtors, user }) {
             </Box>
             <Box className="amount-right">
               <Box component={'span'} style={{ fontSize: '13px' }}>
-                $
+                {symbolToShow}
               </Box>
-              {paidBy.map((u) => u.amount).reduce((acc, el) => acc + el, 0)}
+              {payersAmount.toString().length > 6
+                ? payersAmount.slice(0, 6) + '...'
+                : payersAmount}
             </Box>
           </Grid>
           <Grid item style={{ margin: '0 0 0 10px' }}>
             <Box className="debtors">
-              {
-                debtors.length === 1
-                  ? debtors[0].username === user.username
-                    ? debtors.filter((d) => d.amount > 0).length === 0
-                      ? 'Totally paied'
-                      : 'You lent'
-                    : debtors.filter((d) => d.amount > 0).length === 0
+              {debtors.length === 1
+                ? debtors[0].username === user.username
+                  ? debtors.filter((d) => d.amount > 0).length === 0
                     ? 'Totally paied'
-                    : `${debtors[0].username} owes`
-                  : `${
-                      debtors.filter((d) => d.amount > 0).length === 1
-                        ? debtors.filter((d) => d.amount > 0)[0].username ===
-                          user.username
-                          ? 'You lent'
-                          : `${
-                              debtors.filter((d) => d.amount > 0)[0].username
-                            } owes`
-                        : debtors.filter((d) => d.amount > 0).length === 0
-                        ? 'Totally paied'
-                        : `${debtors.filter((d) => d.amount > 0).length} owes`
-                    }`
-                /* {debtors.length > 1
-                ? `${
+                    : 'You lent'
+                  : debtors.filter((d) => d.amount > 0).length === 0
+                  ? 'Totally paied'
+                  : `${debtors[0].username} owes`
+                : `${
                     debtors.filter((d) => d.amount > 0).length === 1
-                      ? debtors.filter((d) => d.amount > 0)[0].username
-                      : debtors.filter((d) => d.amount > 0).length
-                  } owes`
-                : debtors[0].username === user.username
-                ? 'You lent'
-                : `${debtors[0].username} owes`.length > 13
-                ? `${debtors[0].username.slice(0, 13)}...`
-                : `${debtors[0].username} owes`} */
-              }
+                      ? debtors.filter((d) => d.amount > 0)[0].username ===
+                        user.username
+                        ? 'You lent'
+                        : `${
+                            debtors.filter((d) => d.amount > 0)[0].username
+                          } owes`
+                      : debtors.filter((d) => d.amount > 0).length === 0
+                      ? 'Totally paied'
+                      : `${debtors.filter((d) => d.amount > 0).length} owes`
+                  }`}
             </Box>
             {!debtors.some((u) => u.username === user.username) ? (
               <Box className="amount-left" style={{ color: '#5bc5a7' }}>
                 <Box component={'span'} style={{ fontSize: '13px' }}>
-                  $
+                  {symbolToShow}
                 </Box>
-                {debtors.map((u) => u.amount).reduce((acc, el) => acc + el, 0)}
+                {debtorsAmount.toString().length > 6
+                  ? debtorsAmount.slice(0, 6) + '...'
+                  : debtorsAmount}
               </Box>
             ) : (
               <Box className="amount-left" style={{ color: '#ff652f' }}>
                 <Box component={'span'} style={{ fontSize: '13px' }}>
-                  $
+                  {symbolToShow}
                 </Box>
-                {debtors.map((u) => u.amount).reduce((acc, el) => acc + el, 0)}
+                {debtorsAmount.toString().length > 6
+                  ? debtorsAmount.slice(0, 6) + '...'
+                  : debtorsAmount}
               </Box>
             )}
           </Grid>

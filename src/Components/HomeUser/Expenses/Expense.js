@@ -11,7 +11,7 @@ import useStore from '../../../store/state'
 import ExpenseDetails from './ExpenseDetails'
 import ExpenseSummary from './ExpenseSummary'
 
-function Expense({ expense }) {
+function Expense({ expense, rate }) {
   const user = useStore((state) => state.user)
 
   const paidBy = expense.paidBy
@@ -41,10 +41,16 @@ function Expense({ expense }) {
           paidBy={paidBy}
           debtors={debtors}
           user={user}
+          rate={rate}
         />
       </AccordionSummary>
       <AccordionDetails style={accordingDetailsStyle}>
-        <ExpenseDetails debtors={debtors} user={user} expense={expense} />
+        <ExpenseDetails
+          debtors={debtors}
+          user={user}
+          expense={expense}
+          rate={rate}
+        />
       </AccordionDetails>
     </Accordion>
   )

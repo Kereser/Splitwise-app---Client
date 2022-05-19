@@ -20,15 +20,18 @@ import UserService from '../../services/user'
 
 //router
 import { Route, useLocation } from 'wouter'
+import CurrencyChanger from './CurrencyChanger'
+import PriorityChanger from './PriorityChanger'
 
 const HomeUser = () => {
   const [location] = useLocation()
 
   //store
-  const user = useStore((state) => state.user)
   const socket = useStore((state) => state.socket)
+  const user = useStore((state) => state.user)
   const setUser = useStore((state) => state.setUser)
   const setAlert = useStore((state) => state.setAlert)
+  const setExpensesAtStart = useStore((state) => state.setExpensesAtStart)
   const notifications = user.notifications
 
   // todo:  Si quisiera actualizar, tendria q enviar un evento al backend desde mi front con los nombres de los usuarios a actualizar.
@@ -72,6 +75,7 @@ const HomeUser = () => {
       trigger: true,
       user,
     })
+    setExpensesAtStart(user.expenses)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -110,12 +114,13 @@ const HomeUser = () => {
                 <Dashboard user={user} />
               </Route>
               <Route path="/Friends/:friend">
-                {({ friend }) => <Friends friend={friend} />}
+                {({ friend }) => <Friends friend={friend} user={user} />}
               </Route>
             </Paper>
           </Grid>
           <Grid item xs={2}>
-            Columna al lado
+            <CurrencyChanger />
+            <PriorityChanger user={user} setUser={setUser} />
           </Grid>
         </Grid>
       </Paper>

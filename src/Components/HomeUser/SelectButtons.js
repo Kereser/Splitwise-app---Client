@@ -14,9 +14,8 @@ export default function BasicSelect({ percentage, setPercentage }) {
   return (
     <Box sx={{ width: 90 }}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">How split</InputLabel>
+        <InputLabel>How split</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
           value={percentage}
           label="How split"
           onChange={handleChange}

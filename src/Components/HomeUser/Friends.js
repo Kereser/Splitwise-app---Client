@@ -1,13 +1,9 @@
 import React from 'react'
 
-//store
-import useStore from '../../store/state'
-
 //components
 import Dashboard from './Dashboard'
 
-function Friends({ friend }) {
-  const user = useStore((state) => state.user)
+function Friends({ friend, user }) {
   const expenses = user.expenses
 
   //! Ver con q mas completo los datos en friends.

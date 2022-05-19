@@ -29,8 +29,18 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
   const socket = useStore((state) => state.socket)
   const setUser = useStore((state) => state.setUser)
   const setAlert = useStore((state) => state.setAlert)
+  const expensesAtStart = useStore((state) => state.expensesAtStart)
+  const setExpensesAtStart = useStore((state) => state.setExpensesAtStart)
 
   const handleNewExpense = async () => {
+    if (paidBy.length === 0 || toUser.length === 0) {
+      setAlert({
+        type: 'warning',
+        message: 'You must set debtors and payers',
+        trigger: true,
+      })
+      return
+    }
     let formattedPaidBy = paidBy.split(',').map((user) => user.trim())
 
     const usersToDebtors = toUser === '' ? friend : toUser
@@ -81,6 +91,8 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
         paidBy: formattedPaidBy,
         debtors,
       })
+
+      setExpensesAtStart([...expensesAtStart, newExpense])
 
       // todo: cuando me llegue el new expense, me voy a ir a llamar a mi usuario y le saco los expenses y los actualizo con los q me lleguen.
       // todo: aqui ya controle para actualizar mi usuario q esta enviando la notificacion y online.

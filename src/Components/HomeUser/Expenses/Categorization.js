@@ -109,8 +109,6 @@ function Categorization({ user, expense }) {
         <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
           <InputLabel color="secondary">Category</InputLabel>
           <Select
-            labelId="demo-select-small"
-            id="demo-select-small"
             value={category}
             label="Category"
             onChange={handleChange}

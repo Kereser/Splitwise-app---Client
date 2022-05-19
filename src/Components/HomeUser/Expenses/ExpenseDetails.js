@@ -16,13 +16,15 @@ import ExpenseDialog from './ExpenseDialog'
 import TransferDialog from './TransferDialog'
 import Categorization from './Categorization'
 
-function ExpenseDetails({ debtors, user, expense }) {
+function ExpenseDetails({ debtors, user, expense, rate }) {
   const [payment, setPayment] = useState(0)
+  const toCurrency = useStore((state) => state.toCurrency)
 
   //store
   const setUser = useStore((state) => state.setUser)
 
   const debtor = debtors.filter((u) => u.username === user.username)
+  console.log(debtor, 'DEBtor')
 
   const reBtnStyle = {
     margin: '2px 7px',
@@ -89,6 +91,11 @@ function ExpenseDetails({ debtors, user, expense }) {
 
   //! Crear componente para la adicion de preferencias por cada uno de los usuarios q obvio cada expense pueda tener su propia categoria.
   //? Me toca igualmente aplicar algo de logica y llamadas a servicios para ver si la nota ya esta seteada como algo, si no, pues poner la respuesta por defecto.
+
+  const amountToPay = (debtor[0]?.amount * rate).toFixed(1)
+
+  const symbolToShow = toCurrency === 'EUR' ? '€' : '$'
+
   if (debtors.map((u) => u.username).includes(user.username)) {
     return (
       <>
@@ -101,8 +108,8 @@ function ExpenseDetails({ debtors, user, expense }) {
               Your total amount to pay is:
             </Grid>
             <Grid item style={{ color: '#ff652f' }}>
-              <Box component={'span'}>$</Box>
-              {debtor[0].amount}
+              <Box component={'span'}>{symbolToShow}</Box>
+              {amountToPay}
             </Grid>
           </Grid>
         </Box>
