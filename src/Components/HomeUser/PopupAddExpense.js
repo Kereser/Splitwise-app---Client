@@ -33,23 +33,49 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
   const setExpensesAtStart = useStore((state) => state.setExpensesAtStart)
 
   const handleNewExpense = async () => {
-    try {
-      const totalUsers = await UserService.getAll()
-      const totalUsernames = totalUsers.map((u) => u.username)
+    let totalUsernames = []
+    if (friend) {
+      try {
+        const totalUsers = await UserService.getAll()
+        totalUsernames = totalUsers.map((u) => u.username)
 
-      if (
-        !totalUsernames.includes(toUser) ||
-        !totalUsernames.includes(paidBy)
-      ) {
+        const usernames = [
+          friend,
+          ...paidBy.split(',').map((user) => user.trim()),
+        ]
+
+        for (let i = 0; i < totalUsers.length; i++) {
+          if (!totalUsernames.includes(usernames[i])) {
+            setAlert({
+              type: 'error',
+              message: `${totalUsers[i]} doesn't exist in the database`,
+              trigger: true,
+            })
+            return
+          }
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    let formattedPaidBy = paidBy.split(',').map((user) => user.trim())
+    const usersToDebtors = toUser === '' ? friend : toUser
+    let debtors = usersToDebtors
+      .split(',')
+      .map((user) => user.trim())
+      .filter((user) => !formattedPaidBy.includes(user))
+
+    const totalUsers = [...formattedPaidBy, ...debtors]
+    for (let i = 0; i < totalUsers.length; i++) {
+      if (!totalUsernames.includes(totalUsers[i])) {
         setAlert({
           type: 'error',
-          message: "Username doesn't exist in database",
+          message: `${totalUsers[i]} doesn't exist in the database`,
           trigger: true,
         })
         return
       }
-    } catch (err) {
-      console.error(err)
     }
 
     if (paidBy.length === 0 || toUser.length === 0) {
@@ -69,13 +95,6 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
       })
       return
     }
-
-    let formattedPaidBy = paidBy.split(',').map((user) => user.trim())
-    const usersToDebtors = toUser === '' ? friend : toUser
-    let debtors = usersToDebtors
-      .split(',')
-      .map((user) => user.trim())
-      .filter((user) => !formattedPaidBy.includes(user))
 
     if (debtors.length === 0) {
       setAlert({

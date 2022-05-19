@@ -15,9 +15,9 @@ function ExpenseDialog({
   debtor,
   payment,
   disabled,
+  open,
+  setOpen,
 }) {
-  const [open, setOpen] = useState(false)
-
   const handleClickOpen = () => {
     setOpen(true)
   }

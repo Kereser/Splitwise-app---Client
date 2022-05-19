@@ -15,12 +15,16 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import useStore from '../store/state'
 import AlertComponent from './HomeUser/AlertComponent'
 
+//wouter
+import { useLocation } from 'wouter'
+
 const Signup = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const setAlert = useStore((state) => state.setAlert)
   const setUser = useStore((state) => state.setUser)
+  const [, setLocation] = useLocation()
 
   const paperStyle = {
     padding: '20px',
@@ -43,22 +47,57 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(username, password, name)
-    try {
-      const createdUser = await UserService.create({ username, password, name })
-      setUser(createdUser)
-    } catch (err) {
-      console.error(err)
-      console.log('Entro al error')
+    if (username.length < 4) {
       setAlert({
         trigger: true,
-        message: 'Could not create a new user because username already exists.',
+        message: 'Username must be at least 4 characters',
         type: 'error',
       })
+      return
+    } else if (password.length < 4) {
+      setAlert({
+        trigger: true,
+        message: 'Password must be at least 4 characters',
+        type: 'error',
+      })
+      return
+    } else if (name.length < 4) {
+      setAlert({
+        trigger: true,
+        message: 'Name must be at least 4 characters',
+        type: 'error',
+      })
+      return
+    } else if (username.match(/\s/)) {
+      setAlert({
+        trigger: true,
+        message: 'Username cannot contain spaces',
+        type: 'error',
+      })
+      return
+    } else {
+      try {
+        const createdUser = await UserService.create({
+          username,
+          password,
+          name,
+        })
+        setUser(createdUser)
+      } catch (err) {
+        console.error(err)
+        console.log('Entro al error')
+        setAlert({
+          trigger: true,
+          message:
+            'Could not create a new user because username already exists.',
+          type: 'error',
+        })
+      }
+      setLocation('/Dashboard')
+      setName('')
+      setUsername('')
+      setPassword('')
     }
-    setName('')
-    setUsername('')
-    setPassword('')
   }
 
   return (

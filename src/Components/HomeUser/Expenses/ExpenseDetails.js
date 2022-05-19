@@ -18,6 +18,7 @@ import Categorization from './Categorization'
 
 function ExpenseDetails({ debtors, user, expense, rate }) {
   const [payment, setPayment] = useState(0)
+  const [open, setOpen] = useState(false)
   const toCurrency = useStore((state) => state.toCurrency)
 
   //store
@@ -34,6 +35,7 @@ function ExpenseDetails({ debtors, user, expense, rate }) {
 
   //! Desde aqui debo enviar un evento con un socket con todos los usuarios para q envie una senal de actualizacion de expenses a los usuarios online! NO SE HACE CON LOS OFFLINE pq a ellos cuando entren a la app ya van a tener actualizado el estado.
   const handlePartialPayment = async () => {
+    setOpen(false)
     const debtorsToUpdate = expense.debtors
     debtorsToUpdate.map((u) => {
       if (u.username === user.username) {
@@ -131,6 +133,8 @@ function ExpenseDetails({ debtors, user, expense, rate }) {
               payment={payment}
               setPayment={setPayment}
               disabled={true}
+              open={open}
+              setOpen={setOpen}
             >
               <ParcialPaymentPopUp
                 debtor={debtor}
@@ -154,6 +158,8 @@ function ExpenseDetails({ debtors, user, expense, rate }) {
               handlePartialPayment={handlePartialPayment}
               debtor={debtor}
               payment={payment}
+              open={open}
+              setOpen={setOpen}
             >
               <ParcialPaymentPopUp
                 debtor={debtor}
