@@ -32,53 +32,13 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
   const expensesAtStart = useStore((state) => state.expensesAtStart)
   const setExpensesAtStart = useStore((state) => state.setExpensesAtStart)
 
+  console.log(friend)
+
   const handleNewExpense = async () => {
-    let totalUsernames = []
-    if (friend) {
-      try {
-        const totalUsers = await UserService.getAll()
-        totalUsernames = totalUsers.map((u) => u.username)
+    const debtor = friend ? friend : toUser
 
-        const usernames = [
-          friend,
-          ...paidBy.split(',').map((user) => user.trim()),
-        ]
-
-        for (let i = 0; i < totalUsers.length; i++) {
-          if (!totalUsernames.includes(usernames[i])) {
-            setAlert({
-              type: 'error',
-              message: `${totalUsers[i]} doesn't exist in the database`,
-              trigger: true,
-            })
-            return
-          }
-        }
-      } catch (err) {
-        console.error(err)
-      }
-    }
-
-    let formattedPaidBy = paidBy.split(',').map((user) => user.trim())
-    const usersToDebtors = toUser === '' ? friend : toUser
-    let debtors = usersToDebtors
-      .split(',')
-      .map((user) => user.trim())
-      .filter((user) => !formattedPaidBy.includes(user))
-
-    const totalUsers = [...formattedPaidBy, ...debtors]
-    for (let i = 0; i < totalUsers.length; i++) {
-      if (!totalUsernames.includes(totalUsers[i])) {
-        setAlert({
-          type: 'error',
-          message: `${totalUsers[i]} doesn't exist in the database`,
-          trigger: true,
-        })
-        return
-      }
-    }
-
-    if (paidBy.length === 0 || toUser.length === 0) {
+    if (paidBy.length === 0 || debtor.length === 0) {
+      console.log(paidBy, toUser)
       setAlert({
         type: 'warning',
         message: 'You must set debtors and payers',
@@ -94,6 +54,65 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
         trigger: true,
       })
       return
+    }
+
+    let formattedPaidBy = paidBy.split(',').map((user) => user.trim())
+    const usersToDebtors = toUser === '' ? friend : toUser
+    let debtors = usersToDebtors
+      .split(',')
+      .map((user) => user.trim())
+      .filter((user) => !formattedPaidBy.includes(user))
+
+    //logic to send to friend
+    let totalUsernames = []
+    if (friend) {
+      try {
+        const totalUsers = await UserService.getAll()
+        totalUsernames = totalUsers.map((u) => u.username)
+
+        console.log(totalUsernames, 'Con friend')
+
+        const usernames = [
+          friend,
+          ...paidBy.split(',').map((user) => user.trim()),
+        ]
+
+        console.log(usernames, 'USErs')
+
+        for (let i = 0; i < usernames.length; i++) {
+          if (!totalUsernames.includes(usernames[i])) {
+            setAlert({
+              type: 'error',
+              message: `${usernames[i]} doesn't exist in the database`,
+              trigger: true,
+            })
+            return
+          }
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    //logic to send by dashboard
+    try {
+      const totalUsers = await UserService.getAll()
+      totalUsernames = totalUsers.map((u) => u.username)
+    } catch (err) {
+      console.error(err)
+    }
+
+    const totalUsers = [...formattedPaidBy, ...debtors]
+    console.log(totalUsers, totalUsernames)
+    for (let i = 0; i < totalUsers.length; i++) {
+      if (!totalUsernames.includes(totalUsers[i])) {
+        setAlert({
+          type: 'error',
+          message: `${totalUsers[i]} doesn't exist in the database`,
+          trigger: true,
+        })
+        return
+      }
     }
 
     if (debtors.length === 0) {
