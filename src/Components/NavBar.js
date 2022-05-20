@@ -1,5 +1,4 @@
-import React from 'react'
-
+import { useState } from 'react'
 //mui components
 import {
   Box,
@@ -11,13 +10,14 @@ import {
   IconButton,
   Typography,
   Tooltip,
+  Button,
+  Paper,
 } from '@mui/material'
 
 //icons
 import SettingsIcon from '@mui/icons-material/Settings'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import Logout from '@mui/icons-material/Logout'
-import { Button, Paper } from '@mui/material'
 
 //services
 import UserService from '../services/user'
@@ -30,12 +30,11 @@ import useStore from '../store/state'
 import { useLocation } from 'wouter'
 
 export default function NavBar({ notifications, user, setUser }) {
-  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
   const [, setLocation] = useLocation()
   const socket = useStore((state) => state.socket)
   const open = Boolean(anchorEl)
 
-  console.log(notifications)
   //? styles
   const avatarStyle = {
     backgroundColor: '#66b165',
@@ -68,11 +67,7 @@ export default function NavBar({ notifications, user, setUser }) {
 
       try {
         const updatedUser = await UserService.update(newUser, user.id)
-
-        if (updatedUser) {
-          console.log(updatedUser, 'updatedUser')
-          setUser(updatedUser)
-        }
+        setUser(updatedUser)
       } catch (err) {
         alert('Could not accept all notification sucessfully')
         console.error(err)
@@ -80,10 +75,8 @@ export default function NavBar({ notifications, user, setUser }) {
     }
   }
 
-  const handleAccept = async (notif, index) => {
+  const handleAccept = async (index) => {
     const originalNotis = user.notifications
-    console.log(user)
-    console.log('expense: ', notif)
     const newNotis = originalNotis.filter((_n, i) => {
       return i !== index
     })
@@ -91,19 +84,14 @@ export default function NavBar({ notifications, user, setUser }) {
 
     try {
       const updatedUser = await UserService.update(newUser, user.id)
-
-      if (updatedUser) {
-        console.log(updatedUser, 'updatedUser')
-        setUser(updatedUser)
-      }
+      setUser(updatedUser)
     } catch (err) {
       alert('Could not accept/delete notification sucessfully')
       console.error(err)
     }
-    //Este new user es el q debo enviar para actualizar en la base de datos y luego q me retorne le actualizado, setearlo.
   }
 
-  const handleDecline = async (n, index) => {
+  const handleTransferDecline = async (n, index) => {
     socket.emit('newNotification', {
       senderUser: { username: user.username, id: user.id },
       recieverUsers: [n.senderUser.username],
@@ -119,11 +107,7 @@ export default function NavBar({ notifications, user, setUser }) {
 
     try {
       const updatedUser = await UserService.update(newUser, user.id)
-
-      if (updatedUser) {
-        console.log(updatedUser, 'updatedUser')
-        setUser(updatedUser)
-      }
+      setUser(updatedUser)
     } catch (err) {
       alert('Could not accept/delete notification sucessfully')
       console.error(err)
@@ -132,14 +116,13 @@ export default function NavBar({ notifications, user, setUser }) {
 
   const handleTransferAccept = async (n) => {
     const expenseId = n.expense.id
-    // Yo paso la deuda a una persona q originalmente la pago
+
     //! 1Escenario --> Paso la deuda a una persona q pago y puede haber mas gente endeudada conmigo.
     //! 2Escenario --> Paso la deuda a una persona q tambien debe y q obvio no pago.
     //! 3Escenario --> Paso la deuda a una persona q no esta en la deuda ni en pagadores. (Creo q no afecta q hayan mas personas.) --- Agregar a la nueva persona y quitarla a la q la tenia originlamente.
 
     if (n.expense.paidBy.some((p) => p.username === user.username)) {
-      console.log('Entro al paidBy')
-      //! Logica cuando paso a alguien q pago la deuda.
+      //! Logica cuando paso al usuario q pago la cuenta
       const expenseToUpdate = n.expense
 
       const updatedDebtors = expenseToUpdate.debtors.map((d) =>
@@ -164,13 +147,8 @@ export default function NavBar({ notifications, user, setUser }) {
       }
     }
 
-    //! TENGO Q ACTUALIZAR EL USUSARIO Y LA NOTA PERO CON TODOS LOS CAMPOS.
-
-    // Logica para cuando paso el gasto a una persona que no pago la expense.
-    // Y tambien reviso de una vez si al q lo paso esta en los debtors
+    //! Revision de cuando yo estoy entre los q deben.
     else if (n.expense.debtors.some((p) => p.username === user.username)) {
-      console.log('Entro al debtors')
-      //! Logica cuando paso a alguien q debe.
       const amountToTrasnfer = n.expense.debtors.find(
         (d) => d.username === n.senderUser.username,
       ).amount
@@ -204,9 +182,6 @@ export default function NavBar({ notifications, user, setUser }) {
       }
     } else {
       //! Logica cuando no esta dentro de la gente que pago ni debe.
-      // Aqui lo q debo hacer es eliminar la nota del senderUser trayendolo y actualizandolo y metiendo ese expense en el expense de los otros.
-      // Antes tengo que actualilzar el expense.
-      console.log('Entro al else')
       const expenseToUpdate = n.expense
       const updatedDebtors = expenseToUpdate.debtors.map((d) =>
         d.username === n.senderUser.username
@@ -218,13 +193,12 @@ export default function NavBar({ notifications, user, setUser }) {
 
       try {
         const transferUser = await UserService.getOneUser(n.senderUser.id)
-        console.log('transferUser before update', transferUser)
         transferUser.expenses = transferUser.expenses.filter((e) => {
-          console.log('Transfer User: ', transferUser)
-          console.log(e.id, expenseId)
           return e.id !== expenseId
         })
-        console.log('transferUser after update', transferUser)
+        transferUser.preferences = transferUser.preferences.filter((p) => {
+          return p.expense.id !== expenseId
+        })
         await UserService.update(transferUser, n.senderUser.id)
 
         const updatedExpense = await ExpenseService.update(
@@ -235,10 +209,6 @@ export default function NavBar({ notifications, user, setUser }) {
         user.notifications = user.notifications.filter(
           (not) => not.expense.id !== expenseId,
         )
-        user.preferences = user.preferences.filter((p) => {
-          return p.expense.id !== expenseId
-        })
-        console.log('Updated Expense', updatedExpense)
         user.expenses = user.expenses.concat(updatedExpense)
         const updatedUser = await UserService.update(user, user.id)
         setUser(updatedUser)
@@ -269,7 +239,7 @@ export default function NavBar({ notifications, user, setUser }) {
   }
 
   return (
-    <React.Fragment>
+    <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <Typography
           sx={{ maxWidth: '100%' }}
@@ -371,7 +341,7 @@ export default function NavBar({ notifications, user, setUser }) {
                         size="small"
                         variant="contained"
                         style={btnStyle}
-                        onClick={() => handleDecline(n, i)}
+                        onClick={() => handleTransferDecline(n, i)}
                       >
                         Cancel
                       </Button>
@@ -381,7 +351,7 @@ export default function NavBar({ notifications, user, setUser }) {
                       size="small"
                       variant="contained"
                       style={btnStyle}
-                      onClick={() => handleAccept(n, i)}
+                      onClick={() => handleAccept(i)}
                     >
                       Accept
                     </Button>
@@ -412,6 +382,6 @@ export default function NavBar({ notifications, user, setUser }) {
           Logout
         </MenuItem>
       </Menu>
-    </React.Fragment>
+    </>
   )
 }

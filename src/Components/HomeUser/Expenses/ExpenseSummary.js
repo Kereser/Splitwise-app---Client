@@ -88,8 +88,8 @@ function ExpenseSummary({ expense, paidBy, debtors, user, rate }) {
                     : 'You lent'
                   : debtors.filter((d) => d.amount > 0).length === 0
                   ? 'Totally paied'
-                  : debtors[0].username > 16
-                  ? `${debtors[0].username.slice(0, 16)}...`
+                  : debtors[0].username > 11
+                  ? `${debtors[0].username.slice(0, 11)}...`
                   : `${debtors[0].username} owes`
                 : `${
                     debtors.filter((d) => d.amount > 0).length === 1

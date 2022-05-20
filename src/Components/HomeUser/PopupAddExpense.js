@@ -32,8 +32,6 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
   const expensesAtStart = useStore((state) => state.expensesAtStart)
   const setExpensesAtStart = useStore((state) => state.setExpensesAtStart)
 
-  console.log(friend)
-
   const handleNewExpense = async () => {
     const debtor = friend ? friend : toUser
 
@@ -47,7 +45,25 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
       return
     }
 
-    if (balance === 0) {
+    if (!paidBy.includes(user.username)) {
+      setAlert({
+        type: 'warning',
+        message: 'You must be in payers list.',
+        trigger: true,
+      })
+      return
+    }
+
+    if (toUser.includes(user.username)) {
+      setAlert({
+        type: 'warning',
+        message: 'You can not be in debtors list.',
+        trigger: true,
+      })
+      return
+    }
+
+    if (balance <= 0) {
       setAlert({
         type: 'error',
         message: 'You can not set a balance of 0',

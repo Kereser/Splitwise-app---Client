@@ -4,11 +4,15 @@ import { Link, Route } from 'wouter'
 
 //Mui components
 import { Box, Container } from '@mui/material'
+
+//components
 import Login from './Components/Login'
 import Home from './Components/Home'
 import Signup from './Components/Signup'
-import useStore from './store/state'
 import HomeUser from './Components/HomeUser/HomeUser.js'
+
+//Store
+import useStore from './store/state'
 
 // socket
 import { io } from 'socket.io-client'

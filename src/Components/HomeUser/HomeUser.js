@@ -34,15 +34,9 @@ const HomeUser = () => {
   const setExpensesAtStart = useStore((state) => state.setExpensesAtStart)
   const notifications = user.notifications
 
-  // todo:  Si quisiera actualizar, tendria q enviar un evento al backend desde mi front con los nombres de los usuarios a actualizar.
-  //! basicamente es lo mismo q con las notificaciones pero con un evento q se llame updateExpense o algo asi. Pero por ahora debo darle prioridad a la parte del front y el poder debitar pagos parciales o totales.
-  // ? En el backend, podria enviar la info como a los q reciben el expense y quien lo mando tipo notificacion y asi cuando me llegue ese tipo de evento, actualizar el expense a los usuarios q les llego ese evento.]
-
   console.log('My user in general: ', user)
   useEffect(() => {
     socket.on('getNotification', (data) => {
-      console.log('My user in getNotification: ', user)
-      // Actualizo los expenses del usuario q este online y le llegue la not de la new expense.
       async function updateExpenses() {
         const updatedUser = await UserService.getOneUser(user.id)
         console.log(updatedUser, 'updatedUser')

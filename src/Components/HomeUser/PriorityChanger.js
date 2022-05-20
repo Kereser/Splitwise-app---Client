@@ -20,9 +20,6 @@ function PriorityChanger({ user, setUser }) {
   const expensesAtStart = useStore((state) => state.expensesAtStart)
   const [location] = useLocation()
 
-  //! Ya solo me falta actualizar las expenses cuando cree una nueva expense!!!
-  //! Y subir esa vaina a la internacion yiuuuuuuuuuuuuuuu!!
-
   useEffect(() => {
     if (location === '/Dashboard') {
       setPriority('')
@@ -30,14 +27,12 @@ function PriorityChanger({ user, setUser }) {
   }, [location])
 
   const handleChange = ({ target }) => {
-    console.log(expensesAtStart, 'originalExpenses')
     setPriority(target.value)
     const expensesInPreferences = user.preferences.filter(
       (p) => p.category === target.value,
     )
 
     if (target.value === 'All') {
-      console.log('Entro al all')
       setUser({ ...user, expenses: expensesAtStart })
     } else if (expensesInPreferences.length === 0) {
       const newExpenses = []
@@ -51,7 +46,6 @@ function PriorityChanger({ user, setUser }) {
       })
       setUser({ ...user, expenses: newExpenses })
     }
-    console.log('user at last: ', user.expenses)
   }
 
   const boxStyle = {

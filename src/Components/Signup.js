@@ -85,7 +85,6 @@ const Signup = () => {
         setUser(createdUser)
       } catch (err) {
         console.error(err)
-        console.log('Entro al error')
         setAlert({
           trigger: true,
           message:

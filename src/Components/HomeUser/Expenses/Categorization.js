@@ -26,8 +26,6 @@ function Categorization({ user, expense }) {
     setCategory(event.target.value)
   }
 
-  console.log(user.preferences)
-
   const handleSetCategory = async () => {
     const preferences = user.preferences
 
@@ -39,7 +37,6 @@ function Categorization({ user, expense }) {
         category,
       }
       user.preferences = [updatedPreferences]
-      console.log(user.preferences, 'User preferences')
       const udatedUser = await UserService.update(user, user.id)
       setUser(udatedUser)
     } else if (
@@ -49,7 +46,6 @@ function Categorization({ user, expense }) {
         expense,
         category,
       }
-      console.log('segundo if', updatedPreferences)
       user.preferences = [...user.preferences, updatedPreferences]
       const udatedUser = await UserService.update(user, user.id)
       setUser(udatedUser)
@@ -67,7 +63,6 @@ function Categorization({ user, expense }) {
       user.preferences = updatedPreferences
       const udatedUser = await UserService.update(user, user.id)
       setUser(udatedUser)
-      console.log('Else: ', updatedPreferences)
     }
   }
 
@@ -82,13 +77,10 @@ function Categorization({ user, expense }) {
     const expensePreference = user.preferences.filter((e) => {
       return e.expense.id === expense.id
     })
-    console.log(expensePreference, 'expensePreference')
     setCurrentCategory(
       expensePreference.length === 0 ? '' : expensePreference[0].category,
     )
   }, [expense, user.preferences])
-
-  console.log(currentCategory, 'currentCategory')
 
   return (
     <Box>

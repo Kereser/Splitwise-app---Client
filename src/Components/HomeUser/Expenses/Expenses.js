@@ -16,8 +16,6 @@ function Expenses({ filterByFriend = null }) {
   const [filter, setFilter] = useState('')
   const [rate, setRate] = useState(0)
 
-  console.log(user, 'User en expenses')
-
   const expenses = filterByFriend ? filterByFriend : user.expenses
 
   console.log(expenses, 'Expenses en expenses')
