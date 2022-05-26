@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { Grid, Button, Divider } from '@mui/material'
 
 //Components
-import Expenses from './Expenses/Expenses'
-import PopupAddExpense from './PopupAddExpense'
+import Expenses from './Expenses'
+import PopupAddExpense from '../../../../Components/HomeUser/PopupAddExpense'
 
 function Dashboard({ user, friend = null, filterByFriend = null }) {
   const [newExpense, setNewExpense] = useState(false)
@@ -21,7 +21,6 @@ function Dashboard({ user, friend = null, filterByFriend = null }) {
         style={{
           alignItems: 'center',
           backgroundColor: '#EEE',
-          height: '35px',
           justifyContent: 'space-between',
           padding: '2px 20px',
         }}

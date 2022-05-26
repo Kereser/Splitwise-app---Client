@@ -169,10 +169,8 @@ function PopupAddExpense({ newExpense, user, setNewExpense, friend = null }) {
       // todo: cuando me llegue el new expense, me voy a ir a llamar a mi usuario y le saco los expenses y los actualizo con los q me lleguen.
       // todo: aqui ya controle para actualizar mi usuario q esta enviando la notificacion y online.
       if (newExpense) {
-        console.log('New expense: ', newExpense)
         const updatedUser = await UserService.getOneUser(user.id)
         setUser(updatedUser)
-        console.log(updatedUser, 'updatedUser')
 
         const reciverUsers = formattedPaidBy
           .concat(debtors)

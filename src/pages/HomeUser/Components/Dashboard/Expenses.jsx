@@ -1,14 +1,16 @@
 //mui Components
 import { Box, Divider, Paper, Typography } from '@mui/material'
 import React, { useState, useEffect } from 'react'
+
+//components
 import Expense from './Expense'
 import FilterExpenses from './FilterExpenses'
 
 //service
-import RateServices from '../../../services/rate'
+import RateServices from '../../../../services/rate'
 
 //store
-import useStore from '../../../store/state'
+import useStore from '../../../../store/state'
 
 function Expenses({ filterByFriend = null }) {
   const user = useStore((state) => state.user)
@@ -18,17 +20,13 @@ function Expenses({ filterByFriend = null }) {
 
   const expenses = filterByFriend ? filterByFriend : user.expenses
 
-  console.log(expenses, 'Expenses en expenses')
-
   let expensesToShow = expenses.filter((expense) => {
-    console.log(expense.description.includes(filter))
     return expense.description.toLowerCase().startsWith(filter.toLowerCase())
   })
 
   useEffect(() => {
     async function getRate() {
       const rates = await RateServices.getRates('USD')
-      console.log(rates.conversion_rates)
       setRate(rates.conversion_rates[toCurrency])
     }
 

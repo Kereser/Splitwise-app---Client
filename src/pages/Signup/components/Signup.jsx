@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
+import UserService from '../../../services/user'
 
-//mui components-Icons
 import {
   Avatar,
   Button,
@@ -9,36 +9,22 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import VpnKeyIcon from '@mui/icons-material/VpnKey'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
-// wouter
-import { Link, useLocation } from 'wouter'
+//State
+import useStore from '../../../store/state'
+import AlertComponent from '../../../Components/HomeUser/AlertComponent'
 
-// Servicelogin
-import loginService from '../services/login'
+//wouter
+import { useLocation } from 'wouter'
 
-// Store
-import useStore from '../store/state'
-
-const Login = () => {
+const Signup = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const setAlert = useStore((state) => state.setAlert)
   const setUser = useStore((state) => state.setUser)
   const [, setLocation] = useLocation()
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    console.log(username, password)
-    try {
-      const userLogged = await loginService.login({ username, password })
-      console.log('User logged: ', userLogged)
-      setLocation('/Dashboard')
-      setUser(userLogged)
-    } catch (err) {
-      console.log(err)
-      alert('Wrong credentials')
-    }
-  }
 
   const paperStyle = {
     padding: '20px',
@@ -48,7 +34,7 @@ const Login = () => {
   }
 
   const avatarStyle = {
-    backgroundColor: '#f50057',
+    backgroundColor: '#66b165',
   }
 
   const btnStyle = {
@@ -57,6 +43,29 @@ const Login = () => {
 
   const textStyle = {
     margin: '4px 0',
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const createdUser = await UserService.create({
+        username,
+        password,
+        name,
+      })
+      setUser(createdUser)
+      setLocation('/Dashboard')
+    } catch (err) {
+      console.error(err.response)
+      setAlert({
+        trigger: true,
+        message: err.response.data.message,
+        type: 'error',
+      })
+    }
+    setName('')
+    setUsername('')
+    setPassword('')
   }
 
   return (
@@ -70,10 +79,10 @@ const Login = () => {
         >
           <Grid align="center" item xs={3}>
             <Avatar style={avatarStyle}>
-              <VpnKeyIcon />
+              <AddCircleOutlineIcon />
             </Avatar>
             <Typography variant="h5" style={{ padding: '10px 0' }}>
-              Log-in
+              Sign-up
             </Typography>
           </Grid>
 
@@ -84,8 +93,18 @@ const Login = () => {
               placeholder="Username"
               required
               fullWidth
-              value={username}
               onChange={({ target }) => setUsername(target.value)}
+              value={username}
+              style={textStyle}
+            />
+            <TextField
+              variant="standard"
+              label="Name"
+              placeholder="Name"
+              required
+              fullWidth
+              onChange={({ target }) => setName(target.value)}
+              value={name}
               style={textStyle}
             />
             <TextField
@@ -94,8 +113,8 @@ const Login = () => {
               placeholder="Password"
               required
               fullWidth
-              value={password}
               onChange={({ target }) => setPassword(target.value)}
+              value={password}
               type="password"
               style={textStyle}
             />
@@ -103,21 +122,18 @@ const Login = () => {
               type="submit"
               size="small"
               fullWidth
-              variant="contained"
               onClick={handleSubmit}
+              variant="contained"
               style={btnStyle}
             >
-              Sign in
+              Create account
             </Button>
-            <Typography variant="body2" style={{ padding: '5px 0' }}>
-              New user?
-              <Link href="/signup"> Sign up</Link>
-            </Typography>
           </Grid>
         </Grid>
       </Paper>
+      <AlertComponent />
     </Grid>
   )
 }
 
-export default Login
+export default Signup

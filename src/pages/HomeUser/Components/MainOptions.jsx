@@ -6,12 +6,12 @@ import { Stack, Divider, Box } from '@mui/material'
 //mui icons
 import ListAltIcon from '@mui/icons-material/ListAlt'
 
-//components
+//wouter
 import { Link } from 'wouter'
 
 //store
-import useStore from '../../store/state'
-import FriendDialog from './FriendDialog'
+import useStore from '../../../store/state'
+import FriendDialog from '../../../Components/HomeUser/FriendDialog'
 
 function MainOptions() {
   const [open, setOpen] = useState(false)

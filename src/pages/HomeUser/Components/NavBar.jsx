@@ -20,14 +20,17 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import Logout from '@mui/icons-material/Logout'
 
 //services
-import UserService from '../services/user'
-import ExpenseService from '../services/expense'
+import UserService from '../../../services/user'
+import ExpenseService from '../../../services/expense'
 
 //store
-import useStore from '../store/state'
+import useStore from '../../../store/state'
 
 //wouter
 import { useLocation } from 'wouter'
+
+//Event sender
+import { eventSender } from '../../../socketEvents/eventSender'
 
 export default function NavBar({ notifications, user, setUser }) {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -44,9 +47,20 @@ export default function NavBar({ notifications, user, setUser }) {
     margin: '0 8px 5px 8px',
   }
 
+  const paperStyle = {
+    width: '100%',
+    height: '100%',
+  }
+
+  const boxStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+
   //Event handlers
   const handleLogOut = () => {
-    setLocation('/login')
+    setLocation('/')
     setUser({})
   }
 
@@ -63,10 +77,11 @@ export default function NavBar({ notifications, user, setUser }) {
       'You are about to accept all notifications, including those who ask u for transfer a debt \n\n Are you sure?',
     )
     if (confirm) {
-      const newUser = { ...user, notifications: [] }
-
       try {
-        const updatedUser = await UserService.update(newUser, user.id)
+        const updatedUser = await UserService.update(
+          { user, action: { type: 'AcceptAll', n: null } },
+          user.id,
+        )
         setUser(updatedUser)
       } catch (err) {
         alert('Could not accept all notification sucessfully')
@@ -75,15 +90,12 @@ export default function NavBar({ notifications, user, setUser }) {
     }
   }
 
-  const handleAccept = async (index) => {
-    const originalNotis = user.notifications
-    const newNotis = originalNotis.filter((_n, i) => {
-      return i !== index
-    })
-    const newUser = { ...user, notifications: newNotis }
-
+  const handleAccept = async (i) => {
     try {
-      const updatedUser = await UserService.update(newUser, user.id)
+      const updatedUser = await UserService.update(
+        { user, action: { type: 'AcceptOne', index: i } },
+        user.id,
+      )
       setUser(updatedUser)
     } catch (err) {
       alert('Could not accept/delete notification sucessfully')
@@ -91,23 +103,22 @@ export default function NavBar({ notifications, user, setUser }) {
     }
   }
 
-  const handleTransferDecline = async (n, index) => {
-    socket.emit('newNotification', {
+  const handleTransferDecline = async (n, i) => {
+    const event = 'newNotification'
+    const payload = {
       senderUser: { username: user.username, id: user.id },
       recieverUsers: [n.senderUser.username],
       expense: n.expense,
       acceptTransfer: false,
-    })
-
-    const originalNotis = user.notifications
-    const newNotis = originalNotis.filter((_n, i) => {
-      return i !== index
-    })
-    const newUser = { ...user, notifications: newNotis }
+    }
 
     try {
-      const updatedUser = await UserService.update(newUser, user.id)
+      const updatedUser = await UserService.update(
+        { user, action: { type: 'AcceptOne', index: i } },
+        user.id,
+      )
       setUser(updatedUser)
+      eventSender(socket, event, payload)
     } catch (err) {
       alert('Could not accept/delete notification sucessfully')
       console.error(err)
@@ -115,127 +126,32 @@ export default function NavBar({ notifications, user, setUser }) {
   }
 
   const handleTransferAccept = async (n) => {
+    console.log(n)
     const expenseId = n.expense.id
-
-    //! 1Escenario --> Paso la deuda a una persona q pago y puede haber mas gente endeudada conmigo.
-    //! 2Escenario --> Paso la deuda a una persona q tambien debe y q obvio no pago.
-    //! 3Escenario --> Paso la deuda a una persona q no esta en la deuda ni en pagadores. (Creo q no afecta q hayan mas personas.) --- Agregar a la nueva persona y quitarla a la q la tenia originlamente.
-
-    if (n.expense.paidBy.some((p) => p.username === user.username)) {
-      //! Logica cuando paso al usuario q pago la cuenta
-      const expenseToUpdate = n.expense
-
-      const updatedDebtors = expenseToUpdate.debtors.map((d) =>
-        d.username === n.senderUser.username
-          ? { username: n.senderUser.username, amount: 0 }
-          : d,
-      )
-      expenseToUpdate.debtors = updatedDebtors
-
-      try {
-        await ExpenseService.update(expenseToUpdate, expenseId)
-
-        //!Usar el usuario actualizado para setear estado
-        user.notifications = user.notifications.filter(
-          (not) => not.expense.id !== expenseId,
-        )
-        const updatedUser = await UserService.update(user, user.id)
-        setUser(updatedUser)
-      } catch (err) {
-        alert('Could not accept/delete notification sucessfully')
-        console.error(err)
-      }
-    }
-
-    //! Revision de cuando yo estoy entre los q deben.
-    else if (n.expense.debtors.some((p) => p.username === user.username)) {
-      const amountToTrasnfer = n.expense.debtors.find(
-        (d) => d.username === n.senderUser.username,
-      ).amount
-      const originalAmount = n.expense.debtors.find(
-        (d) => d.username === user.username,
-      ).amount
-      const newAmount = originalAmount + amountToTrasnfer
-
-      const expenseToUpdate = n.expense
-      const updatedDebtors = expenseToUpdate.debtors.map((d) =>
-        d.username === n.senderUser.username
-          ? { username: n.senderUser.username, amount: 0 }
-          : d.username === user.username
-          ? { username: user.username, amount: newAmount }
-          : d,
-      )
-
-      expenseToUpdate.debtors = updatedDebtors
-
-      try {
-        await ExpenseService.update(expenseToUpdate, expenseId)
-
-        user.notifications = user.notifications.filter(
-          (not) => not.expense.id !== expenseId,
-        )
-        const updatedUser = await UserService.update(user, user.id)
-        setUser(updatedUser)
-      } catch (err) {
-        alert('Could not accept/delete notification sucessfully')
-        console.error(err)
-      }
-    } else {
-      //! Logica cuando no esta dentro de la gente que pago ni debe.
-      const expenseToUpdate = n.expense
-      const updatedDebtors = expenseToUpdate.debtors.map((d) =>
-        d.username === n.senderUser.username
-          ? { ...d, username: user.username }
-          : d,
-      )
-
-      expenseToUpdate.debtors = updatedDebtors
-
-      try {
-        const transferUser = await UserService.getOneUser(n.senderUser.id)
-        transferUser.expenses = transferUser.expenses.filter((e) => {
-          return e.id !== expenseId
-        })
-        transferUser.preferences = transferUser.preferences.filter((p) => {
-          return p.expense.id !== expenseId
-        })
-        await UserService.update(transferUser, n.senderUser.id)
-
-        const updatedExpense = await ExpenseService.update(
-          expenseToUpdate,
-          expenseId,
-        )
-
-        user.notifications = user.notifications.filter(
-          (not) => not.expense.id !== expenseId,
-        )
-        user.expenses = user.expenses.concat(updatedExpense)
-        const updatedUser = await UserService.update(user, user.id)
-        setUser(updatedUser)
-      } catch (err) {
-        alert('Could not accept/delete notification sucessfully')
-        console.error(err)
-      }
-    }
-
-    socket.emit('newNotification', {
+    const event = 'newNotification'
+    const payload = {
       senderUser: { username: user.username, id: user.id },
       recieverUsers: [n.senderUser.username],
       expense: n.expense,
       acceptTransfer: true,
-    })
-  }
+    }
 
-  //Styles
-  const paperStyle = {
-    width: '100%',
-    height: '100%',
-  }
-
-  const boxStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    try {
+      await ExpenseService.update(
+        {
+          notification: { expense: n.expense, senderUser: n.senderUser },
+          user,
+          type: 'Transfer',
+        },
+        expenseId,
+      )
+      const updatedUser = await UserService.getOneUser(user.id)
+      setUser(updatedUser)
+      eventSender(socket, event, payload)
+    } catch (err) {
+      alert('Could not accept/delete notification sucessfully')
+      console.error(err)
+    }
   }
 
   return (

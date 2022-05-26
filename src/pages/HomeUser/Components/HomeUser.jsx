@@ -1,30 +1,33 @@
 import { useEffect } from 'react'
 
 //components
-import AlertComponent from './AlertComponent'
+import AlertComponent from '../../../Components/HomeUser/AlertComponent'
 
 //mui components
 import { Box, Container, Paper, Grid } from '@mui/material'
 
 // State
-import useStore from '../../store/state'
+import useStore from '../../../store/state'
 
 //Components
-import NavBar from '../NavBar'
-import Dashboard from './Dashboard'
-import Friends from './Friends'
+import NavBar from './NavBar'
+import Dashboard from './Dashboard/Dashboard'
+import Friends from './Dashboard/Friends'
 import MainOptions from './MainOptions'
+import CurrencyChanger from '../../../Components/HomeUser/CurrencyChanger'
+import PriorityChanger from '../../../Components/HomeUser/PriorityChanger'
 
 //service
-import UserService from '../../services/user'
+import UserService from '../../../services/user'
 
 //router
 import { Route, useLocation } from 'wouter'
-import CurrencyChanger from './CurrencyChanger'
-import PriorityChanger from './PriorityChanger'
+
+//socketEvents
+import { eventReciever } from '../../../socketEvents/eventReciever'
 
 const HomeUser = () => {
-  const [location] = useLocation()
+  const [location, setLocation] = useLocation()
 
   //store
   const socket = useStore((state) => state.socket)
@@ -34,17 +37,8 @@ const HomeUser = () => {
   const setExpensesAtStart = useStore((state) => state.setExpensesAtStart)
   const notifications = user.notifications
 
-  console.log('My user in general: ', user)
   useEffect(() => {
-    socket.on('getNotification', (data) => {
-      async function updateExpenses() {
-        const updatedUser = await UserService.getOneUser(user.id)
-        console.log(updatedUser, 'updatedUser')
-        setUser(updatedUser)
-      }
-
-      updateExpenses()
-    })
+    eventReciever('getNotification', user, socket, setUser)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket])
 
@@ -52,11 +46,19 @@ const HomeUser = () => {
   useEffect(() => {
     if (location === '/Dashboard') {
       async function updateExpenses() {
-        const updatedUser = await UserService.getOneUser(user.id)
-        console.log(updatedUser, 'updatedUser')
-        setUser(updatedUser)
+        try {
+          const updatedUser = await UserService.getOneUser(user.id)
+          setUser(updatedUser)
+        } catch (err) {
+          console.error(err)
+          setAlert({
+            type: 'error',
+            message: 'Not user found',
+            trigger: true,
+          })
+          setLocation('/')
+        }
       }
-
       updateExpenses()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,17 +1,17 @@
 //store
-import useStore from '../../../store/state'
+import useStore from '../../../../store/state'
 
 //mui components
 import { Box, Grid, Divider, Button } from '@mui/material'
 
 //Services to update
-import UserService from '../../../services/user'
-import ExpenseService from '../../../services/expense'
+import UserService from '../../../../services/user'
+import ExpenseService from '../../../../services/expense'
 
 //component
-import ParcialPayDialog from './ParcialPayDialog'
-import TransferDialog from './TransferDialog'
-import Categorization from './Categorization'
+import ParcialPayDialog from '../../../../Components/HomeUser/Expenses/ParcialPayDialog'
+import TransferDialog from '../../../../Components/HomeUser/Expenses/TransferDialog'
+import Categorization from '../../../../Components/HomeUser/Expenses/Categorization'
 
 function ExpenseDetails({ debtors, user, expense, rate }) {
   const toCurrency = useStore((state) => state.toCurrency)
@@ -20,7 +20,6 @@ function ExpenseDetails({ debtors, user, expense, rate }) {
   const setUser = useStore((state) => state.setUser)
 
   const debtor = debtors.filter((u) => u.username === user.username)
-  console.log(debtor, 'DEBtor')
 
   const reBtnStyle = {
     margin: '2px 7px',
@@ -32,18 +31,11 @@ function ExpenseDetails({ debtors, user, expense, rate }) {
       `Are you sure you want to pay the total amount of this expense? $${debtor[0].amount}`,
     )
     if (confirm) {
-      const debtorsToUpdate = expense.debtors
-      debtorsToUpdate.map((u) => {
-        if (u.username === user.username) {
-          u.amount = 0
-          return u
-        }
-        return u
-      })
-      expense.debtors = debtorsToUpdate
-      const id = expense.id
       try {
-        const newExpense = await ExpenseService.update(expense, id)
+        const newExpense = await ExpenseService.update(
+          { expense, user, type: 'TotalPay' },
+          expense.id,
+        )
 
         if (newExpense) {
           const updatedUser = await UserService.getOneUser(user.id)

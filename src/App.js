@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react'
 import './App.css'
-import { Link, Route } from 'wouter'
+import { Link, Route, useLocation } from 'wouter'
 
 //Mui components
 import { Box, Container } from '@mui/material'
 
 //components
-import Login from './Components/Login'
-import Home from './Components/Home'
-import Signup from './Components/Signup'
-import HomeUser from './Components/HomeUser/HomeUser.js'
+import Login from './pages/Login/components/Login'
+import Signup from './pages/Signup/components/Signup'
+import HomeUser from './pages/HomeUser/Components/HomeUser'
 
 //Store
 import useStore from './store/state'
@@ -21,11 +20,12 @@ function App() {
   const user = useStore((state) => state.user)
   const socket = useStore((state) => state.socket)
   const setSocket = useStore((state) => state.setSocket)
+  const [, setLocation] = useLocation()
 
   useEffect(() => {
     setSocket(io())
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    setLocation('/')
+  }, [setSocket, setLocation])
 
   useEffect(() => {
     socket?.emit('newUser', user.username)
@@ -47,9 +47,6 @@ function App() {
               </Box>
               <Box>
                 <Link href="/" className="btn">
-                  Home
-                </Link>
-                <Link href="/login" className="btn">
                   Login
                 </Link>
                 <Link href="/signup" className="btn">
@@ -58,8 +55,7 @@ function App() {
               </Box>
             </Box>
           </Box>
-          <Route path="/login" component={Login} />
-          <Route path="/" component={Home} />
+          <Route path="/" component={Login} />
           <Route path="/signup" component={Signup} />
         </>
       )}

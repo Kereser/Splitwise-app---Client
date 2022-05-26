@@ -104,7 +104,6 @@ function Categorization({ user, expense }) {
             value={category}
             label="Category"
             onChange={handleChange}
-            size="small"
             color="secondary"
           >
             <MenuItem value="">
