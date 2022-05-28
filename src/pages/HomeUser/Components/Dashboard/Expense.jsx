@@ -14,9 +14,6 @@ import ExpenseSummary from './ExpenseSummary'
 function Expense({ expense, rate }) {
   const user = useStore((state) => state.user)
 
-  const paidBy = expense.paidBy
-  const debtors = expense.debtors
-
   //Mui styles
   const accordionSummaryStyle = {
     borderRadius: '0',
@@ -36,21 +33,10 @@ function Expense({ expense, rate }) {
         id="expense-summary"
         style={{ padding: '0px 3px 0px 0px', height: '30px' }}
       >
-        <ExpenseSummary
-          expense={expense}
-          paidBy={paidBy}
-          debtors={debtors}
-          user={user}
-          rate={rate}
-        />
+        <ExpenseSummary expense={expense} user={user} rate={rate} />
       </AccordionSummary>
       <AccordionDetails style={accordingDetailsStyle}>
-        <ExpenseDetails
-          debtors={debtors}
-          user={user}
-          expense={expense}
-          rate={rate}
-        />
+        <ExpenseDetails user={user} expense={expense} rate={rate} />
       </AccordionDetails>
     </Accordion>
   )

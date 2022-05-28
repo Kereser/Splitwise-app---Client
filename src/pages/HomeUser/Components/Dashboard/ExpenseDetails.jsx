@@ -13,14 +13,13 @@ import ParcialPayDialog from '../../../../Components/HomeUser/Expenses/ParcialPa
 import TransferDialog from '../../../../Components/HomeUser/Expenses/TransferDialog'
 import Categorization from '../../../../Components/HomeUser/Expenses/Categorization'
 
-function ExpenseDetails({ debtors, user, expense, rate }) {
+function ExpenseDetails({ user, expense, rate }) {
   const toCurrency = useStore((state) => state.toCurrency)
-
-  //store
   const setUser = useStore((state) => state.setUser)
-
+  const debtors = expense.debtors
   const debtor = debtors.filter((u) => u.username === user.username)
 
+  //styles
   const reBtnStyle = {
     margin: '2px 7px',
   }
@@ -92,7 +91,7 @@ function ExpenseDetails({ debtors, user, expense, rate }) {
             >
               Total pay
             </Button>
-            <ParcialPayDialog expense={expense} debtor={debtor} />
+            <ParcialPayDialog expense={expense} debtor={debtor} user={user} />
             <TransferDialog expense={expense} user={user} />
             <Divider style={{ margin: '10px 0' }} />
             <Categorization expense={expense} user={user} />

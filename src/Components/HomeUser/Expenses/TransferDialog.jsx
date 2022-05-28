@@ -16,6 +16,7 @@ import useStore from '../../../store/state'
 
 //service
 import UserService from '../../../services/user'
+import { eventSender } from '../../../socketEvents/eventSender'
 
 function TransferDialog({ expense, user }) {
   const [open, setOpen] = useState(false)
@@ -45,12 +46,14 @@ function TransferDialog({ expense, user }) {
         })
         return
       }
-      socket.emit('newNotification', {
+      const event = 'newNotification'
+      const payload = {
         senderUser: { username: user.username, id: user.id },
         recieverUsers: [userToTransfer],
         expense,
         transfer: true,
-      })
+      }
+      eventSender(socket, event, payload)
     } catch (err) {
       console.error(err)
     }

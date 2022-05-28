@@ -4,8 +4,11 @@ import { Grid, Box } from '@mui/material'
 //store
 import useStore from '../../../../store/state'
 
-function ExpenseSummary({ expense, paidBy, debtors, user, rate }) {
+function ExpenseSummary({ expense, user, rate }) {
   const toCurrency = useStore((state) => state.toCurrency)
+
+  const paidBy = expense.paidBy
+  const debtors = expense.debtors
 
   const months = {
     1: 'Enero',

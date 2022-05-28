@@ -18,7 +18,7 @@ import ExpenseService from '../../../services/expense'
 //store
 import useStore from '../../../store/state'
 
-function ExpenseDialog({ debtor, expense, user }) {
+function ParcialPayDialog({ debtor, expense, user }) {
   const [open, setOpen] = useState(false)
   const [payment, setPayment] = useState(0)
   const setUser = useStore((state) => state.setUser)
@@ -33,20 +33,11 @@ function ExpenseDialog({ debtor, expense, user }) {
 
   const handlePartialPayment = async () => {
     setOpen(false)
-    const debtorsToUpdate = expense.debtors
-    debtorsToUpdate.map((u) => {
-      if (u.username === user.username) {
-        u.amount -= +payment
-        return u
-      }
-      return u
-    })
-    expense.debtors = debtorsToUpdate
-    const id = expense.id
     try {
-      const newExpense = await ExpenseService.update(expense, id)
-
-      console.log(newExpense)
+      const newExpense = await ExpenseService.update(
+        { expense, user, type: 'PartialPay', payment },
+        expense.id,
+      )
       if (newExpense) {
         const updatedUser = await UserService.getOneUser(user.id)
         console.log(updatedUser, 'updatedUser')
@@ -139,4 +130,4 @@ function ExpenseDialog({ debtor, expense, user }) {
   )
 }
 
-export default ExpenseDialog
+export default ParcialPayDialog
