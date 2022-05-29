@@ -12,11 +12,11 @@ import {
 } from '@mui/material'
 
 //store
-import useStore from '../../../store/state'
+import useStore from '../store/state'
 
 //service
-import UserService from '../../../services/user'
-import { eventSender } from '../../../socketEvents/eventSender'
+import UserService from '../services/user'
+import { eventSender } from '../socketEvents/eventSender'
 
 function TransferDialog({ expense, user }) {
   const [open, setOpen] = useState(false)

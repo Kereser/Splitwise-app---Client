@@ -1,29 +1,25 @@
 import React, { useEffect, useState } from 'react'
 
 //mui components
-import {
-  Box,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-  Typography,
-  Button,
-} from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 //Service
-import UserService from '../../../services/user'
+import UserService from '../services/user'
 
 //store
-import useStore from '../../../store/state'
+import useStore from '../store/state'
+import Dropdown from './Dropdown'
+
+//styledComponents
+import { Button } from '../styledComponents/Button'
 
 function Categorization({ user, expense }) {
-  const [category, setCategory] = useState('')
+  const [selected, setSelected] = useState('')
   const [currentCategory, setCurrentCategory] = useState('')
   const setUser = useStore((state) => state.setUser)
 
   const handleChange = (event) => {
-    setCategory(event.target.value)
+    setSelected(event.target.value)
   }
 
   const handleSetCategory = async () => {
@@ -34,7 +30,7 @@ function Categorization({ user, expense }) {
     if (preferences.length === 0) {
       updatedPreferences = {
         expense,
-        category,
+        selected,
       }
       user.preferences = [updatedPreferences]
       const udatedUser = await UserService.update(user, user.id)
@@ -44,7 +40,7 @@ function Categorization({ user, expense }) {
     ) {
       updatedPreferences = {
         expense,
-        category,
+        selected,
       }
       user.preferences = [...user.preferences, updatedPreferences]
       const udatedUser = await UserService.update(user, user.id)
@@ -54,7 +50,7 @@ function Categorization({ user, expense }) {
         if (p.expense.id === expense.id) {
           return {
             expense,
-            category,
+            selected,
           }
         } else {
           return p
@@ -66,13 +62,6 @@ function Categorization({ user, expense }) {
     }
   }
 
-  //style
-  const boxStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-
   useEffect(() => {
     const expensePreference = user.preferences.filter((e) => {
       return e.expense.id === expense.id
@@ -81,6 +70,8 @@ function Categorization({ user, expense }) {
       expensePreference.length === 0 ? '' : expensePreference[0].category,
     )
   }, [expense, user.preferences])
+
+  const options = ['Important', 'Intermediate', 'Casual']
 
   return (
     <Box>
@@ -96,34 +87,17 @@ function Categorization({ user, expense }) {
           <span className="category-span-green">{currentCategory}</span>
         )}
       </Typography>
-      <Box style={boxStyle}>
-        <Typography component={'span'}>Set a category for expense: </Typography>
-        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-          <InputLabel color="secondary">Category</InputLabel>
-          <Select
-            value={category}
-            label="Category"
-            onChange={handleChange}
-            color="secondary"
-          >
-            <MenuItem value="">
-              <em>Category</em>
-            </MenuItem>
-            <MenuItem value={'Important'}>Important</MenuItem>
-            <MenuItem value={'Intermediate'}>Intermediate</MenuItem>
-            <MenuItem value={'Casual'}>Casual</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-      {category === '' ? (
-        <Button onClick={handleSetCategory} disabled size="small">
+      <Dropdown
+        options={options}
+        title="Category"
+        selected={selected}
+        handleChange={handleChange}
+      />
+      {selected !== '' ? (
+        <Button onClick={handleSetCategory} primary>
           Set Category
         </Button>
-      ) : (
-        <Button onClick={handleSetCategory} size="small">
-          Set Category
-        </Button>
-      )}
+      ) : null}
     </Box>
   )
 }

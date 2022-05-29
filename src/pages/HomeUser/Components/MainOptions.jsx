@@ -11,7 +11,7 @@ import { Link } from 'wouter'
 
 //store
 import useStore from '../../../store/state'
-import FriendDialog from '../../../Components/HomeUser/FriendDialog'
+import FriendDialog from '../../../Components/FriendDialog'
 
 function MainOptions() {
   const [open, setOpen] = useState(false)

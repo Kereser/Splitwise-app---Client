@@ -12,8 +12,8 @@ import {
 } from '@mui/material'
 
 //services
-import UserService from '../../services/user'
-import useStore from '../../store/state'
+import UserService from '../services/user'
+import useStore from '../store/state'
 
 function FriendDialog({ open, setOpen, user }) {
   const [newFriend, setNewFriend] = useState('')

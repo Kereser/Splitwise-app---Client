@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 //components
-import AlertComponent from '../../../Components/HomeUser/AlertComponent'
+import AlertComponent from '../../../Components/AlertComponent'
 
 //mui components
 import { Box, Container, Paper, Grid } from '@mui/material'
@@ -11,11 +11,11 @@ import useStore from '../../../store/state'
 
 //Components
 import NavBar from './NavBar'
-import Dashboard from './Dashboard/Dashboard'
-import Friends from './Dashboard/Friends'
+import Dashboard from './Dashboard'
+import Friends from './Friends'
 import MainOptions from './MainOptions'
-import CurrencyChanger from '../../../Components/HomeUser/CurrencyChanger'
-import PriorityChanger from '../../../Components/HomeUser/PriorityChanger'
+import CurrencyChanger from '../../../Components/CurrencyChanger'
+import PriorityChanger from '../../../Components/PriorityChanger'
 
 //service
 import UserService from '../../../services/user'

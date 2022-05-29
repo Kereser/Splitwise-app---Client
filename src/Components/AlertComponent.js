@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, Alert } from '@mui/material'
 
 //store
-import useStore from '../../store/state'
+import useStore from '../store/state'
 
 function AlertComponent() {
   const alert = useStore((state) => state.alert)

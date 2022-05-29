@@ -7,10 +7,10 @@ import Expense from './Expense'
 import FilterExpenses from './FilterExpenses'
 
 //service
-import RateServices from '../../../../services/rate'
+import RateServices from '../../../services/rate'
 
 //store
-import useStore from '../../../../store/state'
+import useStore from '../../../store/state'
 
 function Expenses({ filterByFriend = null }) {
   const user = useStore((state) => state.user)

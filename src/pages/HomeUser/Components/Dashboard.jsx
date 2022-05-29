@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 //mui components
-import { Grid, Button, Divider } from '@mui/material'
+import { Grid, Divider } from '@mui/material'
 
 //Components
 import Expenses from './Expenses'
-import PopupAddExpense from '../../../../Components/HomeUser/PopupAddExpense'
+import PopupAddExpense from '../../../Components/PopupAddExpense'
+import { Button } from '../../../styledComponents/Button'
 
 function Dashboard({ user, friend = null, filterByFriend = null }) {
   const [newExpense, setNewExpense] = useState(false)
@@ -29,12 +30,7 @@ function Dashboard({ user, friend = null, filterByFriend = null }) {
           {friend ? friend : 'All expenses'}
         </Grid>
         <Grid item>
-          <Button
-            onClick={handleClick}
-            size="small"
-            variant="contained"
-            color="secondary"
-          >
+          <Button onClick={handleClick} primary>
             New expense
           </Button>
         </Grid>

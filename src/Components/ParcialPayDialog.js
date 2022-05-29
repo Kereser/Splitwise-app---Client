@@ -12,11 +12,11 @@ import {
 import { useState } from 'react'
 
 //services
-import UserService from '../../../services/user'
-import ExpenseService from '../../../services/expense'
+import UserService from '../services/user'
+import ExpenseService from '../services/expense'
 
 //store
-import useStore from '../../../store/state'
+import useStore from '../store/state'
 
 function ParcialPayDialog({ debtor, expense, user }) {
   const [open, setOpen] = useState(false)

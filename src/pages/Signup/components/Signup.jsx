@@ -13,7 +13,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 //State
 import useStore from '../../../store/state'
-import AlertComponent from '../../../Components/HomeUser/AlertComponent'
+import AlertComponent from '../../../Components/AlertComponent'
 
 //wouter
 import { useLocation } from 'wouter'

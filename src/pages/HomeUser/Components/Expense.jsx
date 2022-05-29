@@ -5,7 +5,7 @@ import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 //state
-import useStore from '../../../../store/state'
+import useStore from '../../../store/state'
 
 //components
 import ExpenseDetails from './ExpenseDetails'
