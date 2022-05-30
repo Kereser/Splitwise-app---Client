@@ -1,7 +1,7 @@
 import React from 'react'
 
 //components
-import Dashboard from './Dashboard'
+import Dashboard from '../../../Components/Dashboard'
 
 function Friends({ friend, user }) {
   const expenses = user.expenses

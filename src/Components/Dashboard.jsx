@@ -4,8 +4,8 @@ import { Grid, Divider } from '@mui/material'
 
 //Components
 import Expenses from './Expenses'
-import PopupAddExpense from '../../../Components/PopupAddExpense'
-import { Button } from '../../../styledComponents/Button'
+import PopupAddExpense from './PopupAddExpense'
+import { Button } from '../styledComponents/Button'
 
 function Dashboard({ user, friend = null, filterByFriend = null }) {
   const [newExpense, setNewExpense] = useState(false)

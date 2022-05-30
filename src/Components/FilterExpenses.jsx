@@ -2,8 +2,8 @@ import React from 'react'
 
 //mui icons
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
-import { FlexContainer } from '../../../styledComponents/FlexContainer'
-import { Input } from '../../../styledComponents/Input'
+import { FlexContainer } from '../styledComponents/FlexContainer'
+import { Input } from '../styledComponents/Input'
 
 function FilterExpenses({ filter, setFilter }) {
   return (

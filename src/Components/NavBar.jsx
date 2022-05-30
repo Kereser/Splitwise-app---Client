@@ -20,17 +20,17 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import Logout from '@mui/icons-material/Logout'
 
 //services
-import UserService from '../../../services/user'
-import ExpenseService from '../../../services/expense'
+import UserService from '../services/user'
+import ExpenseService from '../services/expense'
 
 //store
-import useStore from '../../../store/state'
+import useStore from '../store/state'
 
 //wouter
 import { useLocation } from 'wouter'
 
 //Event sender
-import { eventSender } from '../../../socketEvents/eventSender'
+import { eventSender } from '../socketEvents/eventSender'
 
 export default function NavBar({ notifications, user, setUser }) {
   const [anchorEl, setAnchorEl] = useState(null)

@@ -10,8 +10,8 @@ import ListAltIcon from '@mui/icons-material/ListAlt'
 import { Link } from 'wouter'
 
 //store
-import useStore from '../../../store/state'
-import FriendDialog from '../../../Components/FriendDialog'
+import useStore from '../store/state'
+import FriendDialog from '../pages/Friend/Components/FriendDialog'
 
 function MainOptions() {
   const [open, setOpen] = useState(false)

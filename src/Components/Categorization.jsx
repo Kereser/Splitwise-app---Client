@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react'
 
-//mui components
-import { Box, Typography } from '@mui/material'
-
 //Service
 import UserService from '../services/user'
 
@@ -17,50 +14,7 @@ function Categorization({ user, expense }) {
   const [selected, setSelected] = useState('')
   const [currentCategory, setCurrentCategory] = useState('')
   const setUser = useStore((state) => state.setUser)
-
-  const handleChange = (event) => {
-    setSelected(event.target.value)
-  }
-
-  const handleSetCategory = async () => {
-    const preferences = user.preferences
-
-    let updatedPreferences
-
-    if (preferences.length === 0) {
-      updatedPreferences = {
-        expense,
-        selected,
-      }
-      user.preferences = [updatedPreferences]
-      const udatedUser = await UserService.update(user, user.id)
-      setUser(udatedUser)
-    } else if (
-      preferences.filter((p) => p.expense.id === expense.id).length === 0
-    ) {
-      updatedPreferences = {
-        expense,
-        selected,
-      }
-      user.preferences = [...user.preferences, updatedPreferences]
-      const udatedUser = await UserService.update(user, user.id)
-      setUser(udatedUser)
-    } else {
-      const updatedPreferences = preferences.map((p) => {
-        if (p.expense.id === expense.id) {
-          return {
-            expense,
-            selected,
-          }
-        } else {
-          return p
-        }
-      })
-      user.preferences = updatedPreferences
-      const udatedUser = await UserService.update(user, user.id)
-      setUser(udatedUser)
-    }
-  }
+  const setAlert = useStore((state) => state.setAlert)
 
   useEffect(() => {
     const expensePreference = user.preferences.filter((e) => {
@@ -71,11 +25,32 @@ function Categorization({ user, expense }) {
     )
   }, [expense, user.preferences])
 
+  const handleChange = (event) => {
+    setSelected(event.target.value)
+  }
+
+  const handleSetCategory = async () => {
+    try {
+      const UpdatedUser = await UserService.update(
+        { user, action: { type: 'Preferences', expense, selected } },
+        user.id,
+      )
+      setUser(UpdatedUser)
+    } catch (err) {
+      console.log(err)
+      setAlert({
+        type: 'error',
+        message: err.response.data.message,
+        trigger: true,
+      })
+    }
+  }
+
   const options = ['Important', 'Intermediate', 'Casual']
 
   return (
-    <Box>
-      <Typography>
+    <div>
+      <h4>
         Current category of this expense:{' '}
         {currentCategory === '' ? (
           <span className="category-span-grey">Unavailable</span>
@@ -86,7 +61,7 @@ function Categorization({ user, expense }) {
         ) : (
           <span className="category-span-green">{currentCategory}</span>
         )}
-      </Typography>
+      </h4>
       <Dropdown
         options={options}
         title="Category"
@@ -98,7 +73,7 @@ function Categorization({ user, expense }) {
           Set Category
         </Button>
       ) : null}
-    </Box>
+    </div>
   )
 }
 

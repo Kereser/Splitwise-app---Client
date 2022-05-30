@@ -1,17 +1,17 @@
 //store
-import useStore from '../../../store/state'
+import useStore from '../store/state'
 
 //mui components
 import { Box, Grid, Divider, Button } from '@mui/material'
 
 //Services to update
-import UserService from '../../../services/user'
-import ExpenseService from '../../../services/expense'
+import UserService from '../services/user'
+import ExpenseService from '../services/expense'
 
 //component
-import ParcialPayDialog from '../../../Components/ParcialPayDialog'
-import TransferDialog from '../../../Components/TransferDialog'
-import Categorization from '../../../Components/Categorization'
+import ParcialPayDialog from './ParcialPayDialog'
+import TransferDialog from './TransferDialog'
+import Categorization from '../Components/Categorization'
 
 function ExpenseDetails({ user, expense, rate }) {
   const toCurrency = useStore((state) => state.toCurrency)

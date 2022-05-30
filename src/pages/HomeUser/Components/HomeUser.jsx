@@ -10,10 +10,10 @@ import { Box, Container, Paper, Grid } from '@mui/material'
 import useStore from '../../../store/state'
 
 //Components
-import NavBar from './NavBar'
-import Dashboard from './Dashboard'
-import Friends from './Friends'
-import MainOptions from './MainOptions'
+import NavBar from '../../../Components/NavBar'
+import Dashboard from '../../../Components/Dashboard'
+import Friends from '../../Friend/Components/Friends'
+import MainOptions from '../../../Components/MainOptions'
 import CurrencyChanger from '../../../Components/CurrencyChanger'
 import PriorityChanger from '../../../Components/PriorityChanger'
 

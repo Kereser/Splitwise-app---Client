@@ -2,7 +2,7 @@
 import { Grid, Box } from '@mui/material'
 
 //store
-import useStore from '../../../store/state'
+import useStore from '../store/state'
 
 function ExpenseSummary({ expense, user, rate }) {
   const toCurrency = useStore((state) => state.toCurrency)

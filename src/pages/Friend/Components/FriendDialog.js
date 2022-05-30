@@ -12,8 +12,8 @@ import {
 } from '@mui/material'
 
 //services
-import UserService from '../services/user'
-import useStore from '../store/state'
+import UserService from '../../../services/user'
+import useStore from '../../../store/state'
 
 function FriendDialog({ open, setOpen, user }) {
   const [newFriend, setNewFriend] = useState('')
@@ -25,47 +25,27 @@ function FriendDialog({ open, setOpen, user }) {
   }
 
   const handleNewFriend = async () => {
-    setNewFriend('')
     setOpen(false)
+
     try {
-      const totalUsers = await UserService.getAll()
-      const totalUsernames = totalUsers.map((u) => u.username)
-
-      if (!totalUsernames.includes(newFriend)) {
-        setAlert({
-          type: 'error',
-          message: "Username doesn't exist in database",
-          trigger: true,
-        })
-        return
-      }
-
-      const friendToAdd = totalUsers.find((u) => u.username === newFriend)
-      const alreadyAddedFriend = user.friends.filter(
-        (f) => f.username === friendToAdd.username,
+      const updatedUser = await UserService.update(
+        { user, action: { type: 'AddFriend', newFriend } },
+        user.id,
       )
-      if (alreadyAddedFriend.length === 1) {
-        setAlert({
-          type: 'error',
-          message: 'You already add this user to friends list',
-          trigger: true,
-        })
-        return
-      } else {
-        user.friends = user.friends.map((f) => f.id)
-        user.friends = user.friends.concat(friendToAdd.id)
-
-        console.log(user)
-        const updatedUser = await UserService.update(user, user.id)
-        setUser(updatedUser)
-        setAlert({
-          type: 'success',
-          message: `User ${friendToAdd.username} added to friends list`,
-          trigger: true,
-        })
-      }
+      setUser(updatedUser)
+      setAlert({
+        type: 'success',
+        message: `User ${updatedUser.username} added to friends list`,
+        trigger: true,
+      })
+      setNewFriend('')
     } catch (err) {
       console.error(err)
+      setAlert({
+        type: 'error',
+        message: err.response.data.message,
+        trigger: true,
+      })
     }
   }
 
