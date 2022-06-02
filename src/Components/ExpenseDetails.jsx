@@ -2,7 +2,7 @@
 import useStore from '../store/state'
 
 //mui components
-import { Box, Grid, Divider, Button } from '@mui/material'
+import { Divider } from '@mui/material'
 
 //Services to update
 import UserService from '../services/user'
@@ -12,17 +12,16 @@ import ExpenseService from '../services/expense'
 import ParcialPayDialog from './ParcialPayDialog'
 import TransferDialog from './TransferDialog'
 import Categorization from '../Components/Categorization'
+import { FlexContainer } from '../styledComponents/FlexContainer'
+
+//styled Components
+import { Button } from '../styledComponents/Button'
 
 function ExpenseDetails({ user, expense, rate }) {
   const toCurrency = useStore((state) => state.toCurrency)
   const setUser = useStore((state) => state.setUser)
   const debtors = expense.debtors
   const debtor = debtors.filter((u) => u.username === user.username)
-
-  //styles
-  const reBtnStyle = {
-    margin: '2px 7px',
-  }
 
   //handle event
   const handleTotalPay = async () => {
@@ -52,47 +51,25 @@ function ExpenseDetails({ user, expense, rate }) {
   if (debtors.map((u) => u.username).includes(user.username)) {
     return (
       <>
-        <Box>
-          <Grid
-            container
-            style={{ justifyContent: 'Space-around', alignItems: 'center' }}
-          >
-            <Grid item style={{ lineHeight: '30px' }}>
-              Your total amount to pay is:
-            </Grid>
-            <Grid item style={{ color: '#ff652f' }}>
-              <Box component={'span'}>{symbolToShow}</Box>
+        <div>
+          <FlexContainer justifyContent="space-around">
+            <h4>Your total amount to pay is:</h4>
+            <h4 style={{ color: '#ff652f' }}>
+              <span>{symbolToShow}</span>
               {amountToPay}
-            </Grid>
-          </Grid>
-        </Box>
+            </h4>
+          </FlexContainer>
+        </div>
         <Divider style={{ margin: '5px 10px' }} />
         {debtor[0].amount === 0 ? (
-          <>
-            <Button
-              color="success"
-              variant="contained"
-              size="small"
-              style={reBtnStyle}
-              disabled
-            >
-              Total pay
-            </Button>
-            <Categorization expense={expense} user={user} />
-          </>
+          <Categorization expense={expense} user={user} />
         ) : (
           <>
-            <Button
-              color="success"
-              variant="contained"
-              size="small"
-              style={reBtnStyle}
-              onClick={handleTotalPay}
-            >
-              Total pay
-            </Button>
-            <ParcialPayDialog expense={expense} debtor={debtor} user={user} />
-            <TransferDialog expense={expense} user={user} />
+            <FlexContainer>
+              <Button onClick={handleTotalPay}>Total pay</Button>
+              <ParcialPayDialog expense={expense} debtor={debtor} user={user} />
+              <TransferDialog expense={expense} user={user} />
+            </FlexContainer>
             <Divider style={{ margin: '10px 0' }} />
             <Categorization expense={expense} user={user} />
           </>
@@ -101,9 +78,9 @@ function ExpenseDetails({ user, expense, rate }) {
     )
   } else {
     return (
-      <Box>
+      <div>
         <Categorization expense={expense} user={user} />
-      </Box>
+      </div>
     )
   }
 }

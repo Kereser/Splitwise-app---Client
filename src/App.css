@@ -54,7 +54,7 @@ a {
 
 .add-btn:hover {
   cursor: pointer;
-  color: #5bc5a7;
+  color: #6d33ff;
 }
 
 /* Header. */
@@ -265,11 +265,11 @@ a {
 }
 
 .selected-link {
-  color: #5bc5a7;
+  color: #6d33ff;
 }
 
 .selected-link:hover {
-  color: #5bc5a7;
+  color: #6d33ff;
   background-color: #ddd;
 }
 
@@ -281,7 +281,7 @@ a {
   width: 7px;
   height: 80%;
   transform: translate(-50%, -50%);
-  background-color: #5bc5a7;
+  background-color: #6d33ff;
   -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);

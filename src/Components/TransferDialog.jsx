@@ -2,8 +2,6 @@ import { useState } from 'react'
 
 //mui components
 import {
-  Box,
-  Button,
   Dialog,
   DialogContent,
   DialogActions,
@@ -11,12 +9,16 @@ import {
   Divider,
 } from '@mui/material'
 
+//styled components
+import { Button } from '../styledComponents/Button'
+
 //store
 import useStore from '../store/state'
 
 //service
 import UserService from '../services/user'
 import { eventSender } from '../socketEvents/eventSender'
+import { Input } from '../styledComponents/Input'
 
 function TransferDialog({ expense, user }) {
   const [open, setOpen] = useState(false)
@@ -33,6 +35,8 @@ function TransferDialog({ expense, user }) {
   }
 
   const handleTransfer = async () => {
+    setOpen(false)
+
     try {
       const totalUsers = await UserService.getAll()
       const totalUsernames = totalUsers.map((u) => u.username)
@@ -54,36 +58,27 @@ function TransferDialog({ expense, user }) {
         transfer: true,
       }
       eventSender(socket, event, payload)
+      setUserToTransfer('')
     } catch (err) {
       console.error(err)
     }
-    setOpen(false)
-    setUserToTransfer('')
   }
 
   return (
-    <Box component={'span'}>
-      <Button
-        variant="contained"
-        size="small"
-        color="warning"
-        onClick={handleClickOpen}
-        style={{ margin: '2px 7px' }}
-      >
+    <>
+      <Button warning onClick={handleClickOpen}>
         Transfer debt
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>
           <Paper>
-            <Box className="title-popup-btn">Transfer your debt</Box>
+            <div className="title-popup-btn">Transfer your debt</div>
           </Paper>
-          <Box
-            component={'input'}
-            className="input"
+          <Input
+            style={{ margin: '10px 0 0' }}
             placeholder="Enter Username"
             value={userToTransfer}
             required
-            style={{ margin: '20px 0 0' }}
             onChange={(e) => setUserToTransfer(e.target.value)}
           />
         </DialogContent>
@@ -93,7 +88,7 @@ function TransferDialog({ expense, user }) {
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   )
 }
 

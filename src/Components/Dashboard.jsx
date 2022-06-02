@@ -1,20 +1,11 @@
-import React, { useState } from 'react'
 //mui components
 import { Grid, Divider } from '@mui/material'
 
 //Components
 import Expenses from './Expenses'
-import PopupAddExpense from './PopupAddExpense'
-import { Button } from '../styledComponents/Button'
+import NewExpenseDialog from './NewExpenseDialog'
 
 function Dashboard({ user, friend = null, filterByFriend = null }) {
-  const [newExpense, setNewExpense] = useState(false)
-
-  // event Handlers
-  const handleClick = () => {
-    setNewExpense(true)
-  }
-
   return (
     <>
       <Grid
@@ -30,21 +21,11 @@ function Dashboard({ user, friend = null, filterByFriend = null }) {
           {friend ? friend : 'All expenses'}
         </Grid>
         <Grid item>
-          <Button onClick={handleClick} primary>
-            New expense
-          </Button>
+          <NewExpenseDialog user={user} friend={friend} />
         </Grid>
       </Grid>
       <Divider />
       <Expenses filterByFriend={filterByFriend} />
-      <Grid>
-        <PopupAddExpense
-          newExpense={newExpense}
-          user={user}
-          friend={friend}
-          setNewExpense={setNewExpense}
-        />
-      </Grid>
     </>
   )
 }

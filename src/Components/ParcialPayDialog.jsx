@@ -1,15 +1,16 @@
 import {
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
-  Typography,
   Paper,
   Divider,
 } from '@mui/material'
 
 import { useState } from 'react'
+
+//styled components
+import { Button } from '../styledComponents/Button'
 
 //services
 import UserService from '../services/user'
@@ -17,6 +18,7 @@ import ExpenseService from '../services/expense'
 
 //store
 import useStore from '../store/state'
+import { Input } from '../styledComponents/Input'
 
 function ParcialPayDialog({ debtor, expense, user }) {
   const [open, setOpen] = useState(false)
@@ -55,13 +57,8 @@ function ParcialPayDialog({ debtor, expense, user }) {
   }
 
   return (
-    <Box component={'span'}>
-      <Button
-        variant="contained"
-        size="small"
-        color="secondary"
-        onClick={handleClickOpen}
-      >
+    <>
+      <Button secundary onClick={handleClickOpen}>
         Parcial Pay
       </Button>
       <Dialog open={open} onClose={handleClose}>
@@ -81,17 +78,14 @@ function ParcialPayDialog({ debtor, expense, user }) {
               <Box style={{ margin: '5px 0' }}>
                 Enter the value u want to pay:
               </Box>
-              <Box
-                component={'input'}
-                className="input"
-                style={{ fontSize: '1.4rem', width: '100%' }}
+              <Input
                 placeholder={`${debtor[0].amount}`}
                 value={payment}
+                onChange={(e) => setPayment(e.target.value)}
                 type="number"
                 min={0}
                 max={debtor[0].amount}
                 required
-                onChange={(e) => setPayment(e.target.value)}
               />
             </Box>
             <Divider />
@@ -99,13 +93,9 @@ function ParcialPayDialog({ debtor, expense, user }) {
         </DialogContent>
         {payment > debtor[0].amount ? (
           <>
-            <Typography
-              variant="subtitle2"
-              component={'div'}
-              style={{ margin: '5px auto', flex: 1 }}
-            >
+            <h5 style={{ textAlign: 'center' }}>
               You can't pay more than ${debtor[0].amount}
-            </Typography>
+            </h5>
             <DialogActions>
               <Button
                 disabled
@@ -126,7 +116,7 @@ function ParcialPayDialog({ debtor, expense, user }) {
           </DialogActions>
         )}
       </Dialog>
-    </Box>
+    </>
   )
 }
 
