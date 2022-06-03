@@ -54,7 +54,7 @@ function ExpenseDetails({ user, expense, rate }) {
         <div>
           <FlexContainer justifyContent="space-around">
             <h4>Your total amount to pay is:</h4>
-            <h4 style={{ color: '#ff652f' }}>
+            <h4 style={{ color: '#ff652f' }} data-testid="amount">
               <span>{symbolToShow}</span>
               {amountToPay}
             </h4>

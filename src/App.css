@@ -15,7 +15,6 @@
   --bg-color-transparent: rgba(255, 255, 255, 0.6);
   --heading-color: hsl(var(--hue1), 61%, 24%);
   --text-color: hsl(var(--hue1), 17%, 63%);
-  --section-padding: 7rem;
 }
 
 /* General  */

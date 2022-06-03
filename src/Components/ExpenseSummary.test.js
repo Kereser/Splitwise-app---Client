@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/extend-expect'
 import { render, screen } from '@testing-library/react'
 import ExpenseSummary from './ExpenseSummary'
+// import { prettyDOM } from '@testing-library/dom's
 
 test('Renders description', () => {
   const expense = {
@@ -19,6 +20,6 @@ test('Renders description', () => {
       rate={1}
     />,
   )
-  const el = screen.getByText('to pr')
-  expect(el).toBeDefined()
+  expect(screen.getByText('to pr')).toBeDefined()
+  expect(screen.getByText('You lent')).toBeDefined()
 })
