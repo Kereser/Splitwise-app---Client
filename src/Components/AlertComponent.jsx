@@ -10,6 +10,7 @@ function AlertComponent() {
   return (
     <div>
       <Dialog
+        data-testid="modal"
         open={alert.trigger}
         onClose={() => setAlert({ ...alert, trigger: false })}
       >

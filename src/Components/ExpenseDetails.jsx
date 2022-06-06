@@ -9,7 +9,7 @@ import UserService from '../services/user'
 import ExpenseService from '../services/expense'
 
 //component
-import ParcialPayDialog from './ParcialPayDialog'
+import PartialPayDialog from './PartialPayDialog'
 import TransferDialog from './TransferDialog'
 import Categorization from '../Components/Categorization'
 import { FlexContainer } from '../styledComponents/FlexContainer'
@@ -67,7 +67,7 @@ function ExpenseDetails({ user, expense, rate }) {
           <>
             <FlexContainer>
               <Button onClick={handleTotalPay}>Total pay</Button>
-              <ParcialPayDialog expense={expense} debtor={debtor} user={user} />
+              <PartialPayDialog expense={expense} debtor={debtor} user={user} />
               <TransferDialog expense={expense} user={user} />
             </FlexContainer>
             <Divider style={{ margin: '10px 0' }} />

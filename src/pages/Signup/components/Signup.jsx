@@ -1,14 +1,7 @@
 import React, { useState } from 'react'
 import UserService from '../../../services/user'
 
-import {
-  Avatar,
-  Button,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Avatar, Paper } from '@mui/material'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 //State
@@ -17,6 +10,11 @@ import AlertComponent from '../../../Components/AlertComponent'
 
 //wouter
 import { useLocation } from 'wouter'
+
+//components
+import { FlexContainer } from '../../../styledComponents/FlexContainer'
+import { Input } from '../../../styledComponents/Input'
+import { Button } from '../../../styledComponents/Button'
 
 const Signup = () => {
   const [username, setUsername] = useState('')
@@ -30,23 +28,10 @@ const Signup = () => {
     padding: '20px',
     margin: '20px auto',
     width: '300px',
-    height: '70vh',
+    height: '450px',
   }
 
-  const avatarStyle = {
-    backgroundColor: '#66b165',
-  }
-
-  const btnStyle = {
-    margin: '8px 0',
-  }
-
-  const textStyle = {
-    margin: '4px 0',
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
     try {
       const createdUser = await UserService.create({
         username,
@@ -56,7 +41,7 @@ const Signup = () => {
       setUser(createdUser)
       setLocation('/Dashboard')
     } catch (err) {
-      console.error(err.response)
+      console.error(err)
       setAlert({
         trigger: true,
         message: err.response.data.message,
@@ -69,70 +54,48 @@ const Signup = () => {
   }
 
   return (
-    <Grid>
+    <FlexContainer>
+      <AlertComponent />
       <Paper elevation={10} style={paperStyle}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          style={{ height: '100%' }}
-        >
-          <Grid align="center" item xs={3}>
-            <Avatar style={avatarStyle}>
+        <FlexContainer orientation="column">
+          <FlexContainer orientation="column">
+            <Avatar
+              style={{
+                backgroundColor: '#66b165',
+              }}
+            >
               <AddCircleOutlineIcon />
             </Avatar>
-            <Typography variant="h5" style={{ padding: '10px 0' }}>
-              Sign-up
-            </Typography>
-          </Grid>
+            <h2 style={{ margin: '12px 0 0' }}>Sign-up</h2>
+          </FlexContainer>
 
-          <Grid item xs={6}>
-            <TextField
-              label="Username"
-              variant="standard"
+          <FlexContainer orientation="column">
+            <Input
               placeholder="Username"
               required
-              fullWidth
               onChange={({ target }) => setUsername(target.value)}
               value={username}
-              style={textStyle}
             />
-            <TextField
-              variant="standard"
-              label="Name"
+            <Input
               placeholder="Name"
               required
-              fullWidth
               onChange={({ target }) => setName(target.value)}
               value={name}
-              style={textStyle}
             />
-            <TextField
-              variant="standard"
-              label="Password"
+            <Input
               placeholder="Password"
               required
-              fullWidth
               onChange={({ target }) => setPassword(target.value)}
               value={password}
               type="password"
-              style={textStyle}
             />
-            <Button
-              type="submit"
-              size="small"
-              fullWidth
-              onClick={handleSubmit}
-              variant="contained"
-              style={btnStyle}
-            >
+            <Button type="submit" onClick={handleSubmit} primary>
               Create account
             </Button>
-          </Grid>
-        </Grid>
+          </FlexContainer>
+        </FlexContainer>
       </Paper>
-      <AlertComponent />
-    </Grid>
+    </FlexContainer>
   )
 }
 

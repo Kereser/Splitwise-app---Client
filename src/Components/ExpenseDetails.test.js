@@ -41,7 +41,7 @@ test('User can select an option for the categeory and button appears', () => {
   expect(screen.getByText('Set Category')).toBeInTheDocument()
 })
 
-test('Can pay total amount', async () => {
+test('Can pay total amount', () => {
   setup()
 
   window.confirm = jest.fn(() => true)

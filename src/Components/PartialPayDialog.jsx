@@ -1,5 +1,4 @@
 import {
-  Box,
   Dialog,
   DialogActions,
   DialogContent,
@@ -19,6 +18,7 @@ import ExpenseService from '../services/expense'
 //store
 import useStore from '../store/state'
 import { Input } from '../styledComponents/Input'
+import { FlexContainer } from '../styledComponents/FlexContainer'
 
 function ParcialPayDialog({ debtor, expense, user }) {
   const [open, setOpen] = useState(false)
@@ -51,11 +51,6 @@ function ParcialPayDialog({ debtor, expense, user }) {
     setPayment(0)
   }
 
-  //Styles
-  const reBtnStyle = {
-    margin: '2px 7px',
-  }
-
   return (
     <>
       <Button secundary onClick={handleClickOpen}>
@@ -65,29 +60,20 @@ function ParcialPayDialog({ debtor, expense, user }) {
         <DialogContent>
           <>
             <Paper>
-              <Box className="title-popup-btn">Parcial payment</Box>
+              <div className="title-popup-btn">Parcial payment</div>
             </Paper>
-            <Box
-              style={{
-                margin: '15px 7px',
-                display: 'flex',
-                justifyContent: 'center',
-                flexDirection: 'column',
-              }}
-            >
-              <Box style={{ margin: '5px 0' }}>
+            <FlexContainer orientation="column">
+              <div style={{ margin: '5px 0' }}>
                 Enter the value u want to pay:
-              </Box>
+              </div>
               <Input
                 placeholder={`${debtor[0].amount}`}
                 value={payment}
                 onChange={(e) => setPayment(e.target.value)}
                 type="number"
-                min={0}
-                max={debtor[0].amount}
                 required
               />
-            </Box>
+            </FlexContainer>
             <Divider />
           </>
         </DialogContent>
@@ -97,21 +83,21 @@ function ParcialPayDialog({ debtor, expense, user }) {
               You can't pay more than ${debtor[0].amount}
             </h5>
             <DialogActions>
-              <Button
-                disabled
-                style={reBtnStyle}
-                onClick={handlePartialPayment}
-              >
-                Accept
-              </Button>
+              <Button onClick={handleClose}>Cancel</Button>
+            </DialogActions>
+          </>
+        ) : payment <= 0 ? (
+          <>
+            <h5 style={{ textAlign: 'center', marginBottom: '15px' }}>
+              You must enter a valid value
+            </h5>
+            <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
             </DialogActions>
           </>
         ) : (
           <DialogActions>
-            <Button style={reBtnStyle} onClick={handlePartialPayment}>
-              Accept
-            </Button>
+            <Button onClick={handlePartialPayment}>Accept</Button>
             <Button onClick={handleClose}>Cancel</Button>
           </DialogActions>
         )}

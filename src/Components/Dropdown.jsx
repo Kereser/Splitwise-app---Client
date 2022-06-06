@@ -15,7 +15,7 @@ function Dropdown({
       <div>{title}</div>
       <div>
         <SelectButtons value={selected} onChange={handleChange}>
-          <option disabled value={''}>
+          <option disabled value={''} style={{ textAlign: 'start' }}>
             Select
           </option>
           {options.map((option, i) => {

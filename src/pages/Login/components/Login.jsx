@@ -1,14 +1,7 @@
 import { useState } from 'react'
 
 //mui components-Icons
-import {
-  Avatar,
-  Button,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Avatar, Paper } from '@mui/material'
 import VpnKeyIcon from '@mui/icons-material/VpnKey'
 
 // wouter
@@ -20,21 +13,31 @@ import loginService from '../../../services/login'
 // Store
 import useStore from '../../../store/state'
 
+//components
+import AlertComponent from '../../../Components/AlertComponent'
+import { Input } from '../../../styledComponents/Input'
+import { Button } from '../../../styledComponents/Button'
+import { FlexContainer } from '../../../styledComponents/FlexContainer'
+
 const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const setUser = useStore((state) => state.setUser)
+  const setAlert = useStore((state) => state.setAlert)
   const [, setLocation] = useLocation()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleClick = async () => {
     try {
       const userLogged = await loginService.login({ username, password })
       setLocation('/Dashboard')
       setUser(userLogged)
     } catch (err) {
       console.log(err)
-      alert('Wrong credentials')
+      setAlert({
+        type: 'error',
+        message: 'Wrong credentials',
+        trigger: true,
+      })
     }
   }
 
@@ -42,74 +45,46 @@ const Login = () => {
     padding: '20px',
     margin: '20px auto',
     width: '300px',
-    height: '70vh',
-  }
-
-  const avatarStyle = {
-    backgroundColor: '#f50057',
-  }
-
-  const textStyle = {
-    margin: '4px 0',
+    height: '400px',
   }
 
   return (
-    <Grid>
+    <FlexContainer>
       <Paper elevation={10} style={paperStyle}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          style={{ height: '100%' }}
-        >
-          <Grid align="center" item xs={3}>
-            <Avatar style={avatarStyle}>
+        <FlexContainer orientation="column">
+          <FlexContainer orientation="column">
+            <Avatar style={{ backgroundColor: '#f50057' }}>
               <VpnKeyIcon />
             </Avatar>
-            <Typography variant="h5" style={{ padding: '10px 0' }}>
-              Log-in
-            </Typography>
-          </Grid>
+            <h2>Log-in</h2>
+          </FlexContainer>
 
-          <Grid item xs={6}>
-            <TextField
-              label="Username"
-              variant="standard"
+          <FlexContainer orientation="column">
+            <Input
               placeholder="Username"
               required
-              fullWidth
               value={username}
               onChange={({ target }) => setUsername(target.value)}
-              style={textStyle}
             />
-            <TextField
-              variant="standard"
-              label="Password"
+            <Input
               placeholder="Password"
               required
-              fullWidth
               value={password}
               onChange={({ target }) => setPassword(target.value)}
               type="password"
-              style={textStyle}
             />
-            <Button
-              type="submit"
-              size="small"
-              fullWidth
-              variant="contained"
-              onClick={handleSubmit}
-            >
-              Sign in
+            <Button type="submit" primary onClick={handleClick}>
+              Log-in
             </Button>
-            <Typography variant="body2" style={{ padding: '5px 0' }}>
+            <h5 style={{ padding: '10px 0 0' }}>
               New user?
               <Link href="/signup"> Sign up</Link>
-            </Typography>
-          </Grid>
-        </Grid>
+            </h5>
+          </FlexContainer>
+        </FlexContainer>
       </Paper>
-    </Grid>
+      <AlertComponent />
+    </FlexContainer>
   )
 }
 

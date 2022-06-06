@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 //mui components
-import { Stack, Divider, Box } from '@mui/material'
+import { Stack, Divider } from '@mui/material'
 
 //mui icons
 import ListAltIcon from '@mui/icons-material/ListAlt'
@@ -13,23 +13,13 @@ import { Link } from 'wouter'
 import useStore from '../store/state'
 import FriendDialog from '../pages/Friend/Components/FriendDialog'
 
+//components
+import { FlexContainer } from '../styledComponents/FlexContainer'
+
 function MainOptions() {
   const [open, setOpen] = useState(false)
   const user = useStore((state) => state.user)
   const friends = user.friends.map((friend) => friend?.username)
-
-  //styles
-  const boxStyle = {
-    margin: ' 0 10px 10px 10px',
-  }
-
-  const boxFlex = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    margin: '15px 0 0',
-    alignItems: 'flex-start',
-    borderRadius: '2px',
-  }
 
   // event handlers
   const handleClick = (e) => {
@@ -47,7 +37,7 @@ function MainOptions() {
   }
 
   return (
-    <Box style={boxStyle}>
+    <div style={{ margin: ' 0 10px 10px 10px' }}>
       <Link
         href="/Dashboard"
         id="selected-link-dashboard"
@@ -57,12 +47,18 @@ function MainOptions() {
         <ListAltIcon sx={{ mr: 0.5, my: 0.1 }} />
         Dashboard
       </Link>
-      <Box className="add-container" style={boxFlex}>
-        <Box style={{ marginBottom: '3px' }}>Friends</Box>
-        <Box className="add-btn" onClick={handleAddFriend}>
+      <FlexContainer
+        className="add-container"
+        alignItems={'flex-start'}
+        justifyContent="space-between"
+        pu={'.1em'}
+        pr={'0'}
+      >
+        <div>Friends</div>
+        <div className="add-btn" onClick={handleAddFriend}>
           <i className="fa-thin fa-plus"></i>add
-        </Box>
-      </Box>
+        </div>
+      </FlexContainer>
       <Stack
         divider={<Divider orientation="horizontal" flexItem />}
         spacing={0}
@@ -81,7 +77,7 @@ function MainOptions() {
         })}
       </Stack>
       <FriendDialog open={open} setOpen={setOpen} user={user} />
-    </Box>
+    </div>
   )
 }
 
