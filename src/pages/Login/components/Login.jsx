@@ -51,7 +51,11 @@ const Login = () => {
   return (
     <FlexContainer>
       <Paper elevation={10} style={paperStyle}>
-        <FlexContainer orientation="column">
+        <FlexContainer
+          orientation="column"
+          style={{ height: '100%' }}
+          justifyContent="space-around"
+        >
           <FlexContainer orientation="column">
             <Avatar style={{ backgroundColor: '#f50057' }}>
               <VpnKeyIcon />

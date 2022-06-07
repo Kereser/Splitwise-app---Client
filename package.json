@@ -24,13 +24,15 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:open": "cypress open"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "plugin:cypress/recommended"
     ]
   },
   "browserslist": {
@@ -49,7 +51,10 @@
     "mini-css-extract-plugin": "2.4.5"
   },
   "devDependencies": {
-    "jest-watch-typeahead": "^0.6.5",
-    "prettier": "^2.6.2"
+    "cypress": "^10.0.3",
+    "eslint-plugin-cypress": "^2.12.1",
+    "jest-watch-typeahead": "0.6.5",
+    "prettier": "2.6.2"
   }
 }
+

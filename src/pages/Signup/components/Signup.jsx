@@ -57,7 +57,11 @@ const Signup = () => {
     <FlexContainer>
       <AlertComponent />
       <Paper elevation={10} style={paperStyle}>
-        <FlexContainer orientation="column">
+        <FlexContainer
+          orientation="column"
+          style={{ height: '100%' }}
+          justifyContent="space-around"
+        >
           <FlexContainer orientation="column">
             <Avatar
               style={{
