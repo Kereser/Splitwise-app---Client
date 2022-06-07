@@ -9,12 +9,13 @@ function Dropdown({
   selected,
   handleChange,
   orientation = null,
+  id,
 }) {
   return (
     <FlexContainer pr={'0.1em'} orientation={orientation}>
       <div>{title}</div>
       <div>
-        <SelectButtons value={selected} onChange={handleChange}>
+        <SelectButtons value={selected} onChange={handleChange} id={id}>
           <option disabled value={''} style={{ textAlign: 'start' }}>
             Select
           </option>

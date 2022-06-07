@@ -112,6 +112,7 @@ function NewExpenseDialog({ user, friend = null }) {
             ) : (
               <div>
                 <Input
+                  id="debtors-input"
                   placeholder="username, username, ..."
                   required
                   value={toUser}
@@ -130,13 +131,14 @@ function NewExpenseDialog({ user, friend = null }) {
             <div>
               <Input
                 required
+                id="description-input"
                 placeholder="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
               <Input
+                id="balance-input"
                 required
-                min={0}
                 placeholder="0"
                 type={'number'}
                 value={balance}
@@ -148,6 +150,7 @@ function NewExpenseDialog({ user, friend = null }) {
             <div style={{ flex: 1 }}>Paid-by:</div>
             <div>
               <Input
+                id="paidBy-input"
                 placeholder={`${user.username}, username, ...`}
                 required
                 value={paidBy}
@@ -176,7 +179,9 @@ function NewExpenseDialog({ user, friend = null }) {
         </DialogContent>
         <DialogActions>
           <ExpenseButton onClick={() => setOpen(false)}>Close</ExpenseButton>
-          <ExpenseButton onClick={handleNewExpense}>Save</ExpenseButton>
+          <ExpenseButton id="newExpense-btn" onClick={handleNewExpense}>
+            Save
+          </ExpenseButton>
         </DialogActions>
       </Dialog>
     </div>

@@ -3,7 +3,6 @@ import { useState } from 'react'
 //mui components
 import {
   Box,
-  Button,
   Dialog,
   DialogContent,
   DialogActions,
@@ -14,6 +13,9 @@ import {
 //services
 import UserService from '../../../services/user'
 import useStore from '../../../store/state'
+
+import { Button } from '../../../styledComponents/Button'
+import { Input } from '../../../styledComponents/Input'
 
 function FriendDialog({ open, setOpen, user }) {
   const [newFriend, setNewFriend] = useState('')
@@ -56,19 +58,19 @@ function FriendDialog({ open, setOpen, user }) {
           <Paper>
             <Box className="title-popup-btn">Add new friend</Box>
           </Paper>
-          <Box
-            component={'input'}
-            className="input"
+          <Input
+            id="newFriend-input"
             placeholder="Enter Username"
             value={newFriend}
             required
-            style={{ margin: '20px 0 0' }}
             onChange={(e) => setNewFriend(e.target.value)}
           />
         </DialogContent>
         <Divider />
         <DialogActions>
-          <Button onClick={handleNewFriend}>Accept</Button>
+          <Button id="newfriend-btn" onClick={handleNewFriend}>
+            Accept
+          </Button>
           <Button onClick={handleClose}>Cancel</Button>
         </DialogActions>
       </Dialog>

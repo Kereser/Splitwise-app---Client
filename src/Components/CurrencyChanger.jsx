@@ -14,6 +14,7 @@ function CurrencyChanger() {
 
   return (
     <Dropdown
+      id="currency-ddwn-filter"
       options={options}
       selected={toCurrency}
       handleChange={handleChange}

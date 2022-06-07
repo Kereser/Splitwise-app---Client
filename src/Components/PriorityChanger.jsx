@@ -43,6 +43,7 @@ function PriorityChanger({ user, setUser }) {
 
   return (
     <Dropdown
+      id="priority-ddwn-filter"
       options={options}
       title={'Priority'}
       handleChange={handleChange}
