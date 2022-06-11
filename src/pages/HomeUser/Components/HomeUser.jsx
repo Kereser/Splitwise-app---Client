@@ -35,6 +35,7 @@ const HomeUser = () => {
   const setUser = useStore((state) => state.setUser)
   const setAlert = useStore((state) => state.setAlert)
   const setExpensesAtStart = useStore((state) => state.setExpensesAtStart)
+  const expensesAtStart = useStore((state) => state.expensesAtStart)
   const notifications = user.notifications
 
   useEffect(() => {
@@ -71,9 +72,17 @@ const HomeUser = () => {
       trigger: true,
       user,
     })
-    setExpensesAtStart(user.expenses)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (user.expenses.length >= expensesAtStart.length) {
+      console.log(user.expenses, 'user expenses')
+      console.log('expenses at start', expensesAtStart)
+      setExpensesAtStart(user.expenses)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   //! Puedo cargar aqui otro useEffect() para q me reciba le evento de actualizacion de usuario por aceptacion de deuda o q envia una notificacion por rechazo de la misma.
 

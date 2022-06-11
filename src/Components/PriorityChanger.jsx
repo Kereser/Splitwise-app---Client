@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import useStore from '../store/state'
+import UserService from '../services/user'
 
 //wouter
 import { useLocation } from 'wouter'
 import Dropdown from './Dropdown'
+import useStore from '../store/state'
 
 function PriorityChanger({ user, setUser }) {
   const [selected, setSelected] = useState('')
@@ -17,25 +18,25 @@ function PriorityChanger({ user, setUser }) {
     }
   }, [location])
 
-  const handleChange = ({ target }) => {
-    setSelected(target.value)
-    const expensesInPreferences = user.preferences.filter(
-      (p) => p.category === target.value,
-    )
-
-    if (target.value === 'All') {
-      setUser({ ...user, expenses: expensesAtStart })
-    } else if (expensesInPreferences.length === 0) {
-      const newExpenses = []
-      setUser({ ...user, expenses: newExpenses })
-    } else {
-      const newExpenses = expensesAtStart.filter((expense) => {
-        const idExpensesPreferences = expensesInPreferences.map(
-          (p) => p.expense.id,
-        )
-        return idExpensesPreferences.includes(expense.id)
-      })
-      setUser({ ...user, expenses: newExpenses })
+  const handleChange = async ({ target }) => {
+    try {
+      const updatedUser = await UserService.update(
+        {
+          user,
+          action: {
+            type: 'filterExpense',
+            selected: target.value,
+            expensesAtStart,
+          },
+        },
+        user.id,
+      )
+      console.log(updatedUser)
+      setSelected(target.value)
+      setUser(updatedUser)
+    } catch (err) {
+      setSelected('')
+      console.log(err)
     }
   }
 

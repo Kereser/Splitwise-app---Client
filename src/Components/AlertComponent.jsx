@@ -31,7 +31,7 @@ function AlertComponent() {
             sx={{
               position: 'absolute',
               right: 1,
-              top: 4,
+              top: 0,
               color: (theme) => theme.palette.grey[500],
             }}
           >

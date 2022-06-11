@@ -63,6 +63,7 @@ function Categorization({ user, expense }) {
         )}
       </h4>
       <Dropdown
+        className="category-ddwn"
         options={options}
         title="Category"
         selected={selected}
