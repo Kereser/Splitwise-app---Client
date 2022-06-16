@@ -37,7 +37,7 @@ function FriendDialog({ open, setOpen, user }) {
       setUser(updatedUser)
       setAlert({
         type: 'success',
-        message: `User ${updatedUser.username} added to friends list`,
+        message: `User ${newFriend} added to friends list`,
         trigger: true,
       })
       setNewFriend('')

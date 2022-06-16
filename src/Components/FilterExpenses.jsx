@@ -10,6 +10,7 @@ function FilterExpenses({ filter, setFilter }) {
     <FlexContainer>
       <FilterAltIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
       <Input
+        id="input-filter"
         placeholder="Filter by description"
         value={filter}
         onChange={({ target }) => setFilter(target.value)}
