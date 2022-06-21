@@ -24,12 +24,10 @@ function MainOptions() {
   // event handlers
   const handleClick = (e) => {
     const links = document.querySelectorAll('.link-btn')
-    console.log(links)
     for (let i = 0; i < links.length; i++) {
       links[i].classList.remove('selected-link')
     }
     e.target.className += ' selected-link'
-    console.log(e.target)
   }
 
   const handleAddFriend = () => {

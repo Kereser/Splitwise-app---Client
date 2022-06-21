@@ -37,7 +37,7 @@ function Categorization({ user, expense }) {
       )
       setUser(UpdatedUser)
     } catch (err) {
-      console.log(err)
+      console.error(err)
       setAlert({
         type: 'error',
         message: err.response.data.message,

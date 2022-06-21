@@ -42,11 +42,10 @@ function ParcialPayDialog({ debtor, expense, user }) {
       )
       if (newExpense) {
         const updatedUser = await UserService.getOneUser(user.id)
-        console.log(updatedUser, 'updatedUser')
         setUser(updatedUser)
       }
     } catch (erro) {
-      console.log('error: ', erro)
+      console.error('error: ', erro)
     }
     setPayment(0)
   }

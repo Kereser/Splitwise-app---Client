@@ -51,19 +51,14 @@ const HomeUser = () => {
           const updatedUser = await UserService.getOneUser(user.id)
           setUser(updatedUser)
         } catch (err) {
-          console.error(err)
-          setAlert({
-            type: 'error',
-            message: 'Not user found',
-            trigger: true,
-          })
           setLocation('/')
+          console.error(err)
         }
       }
       updateExpenses()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location])
+  }, [])
 
   useEffect(() => {
     setAlert({
@@ -77,8 +72,6 @@ const HomeUser = () => {
 
   useEffect(() => {
     if (user.expenses.length >= expensesAtStart.length) {
-      console.log(user.expenses, 'user expenses')
-      console.log('expenses at start', expensesAtStart)
       setExpensesAtStart(user.expenses)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

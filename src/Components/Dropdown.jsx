@@ -22,13 +22,15 @@ function Dropdown({
           id={id}
           className={className}
         >
-          <option disabled value={''} style={{ textAlign: 'start' }}>
+          <option disabled value="" style={{ textAlign: 'start' }}>
             Select
           </option>
-          {options.map((option, i) => {
+          {options.map((option) => {
             return (
-              <React.Fragment key={i}>
-                <option style={{ textAlign: 'start' }}>{option}</option>
+              <React.Fragment key={option}>
+                <option style={{ textAlign: 'start' }} value={option}>
+                  {option}
+                </option>
               </React.Fragment>
             )
           })}

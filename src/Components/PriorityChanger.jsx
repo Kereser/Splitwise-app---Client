@@ -1,64 +1,56 @@
-import React, { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import UserService from '../services/user'
 
 //wouter
 import { useLocation } from 'wouter'
+
 import Dropdown from './Dropdown'
 import useStore from '../store/state'
 
 function PriorityChanger({ user, setUser }) {
-  const [selected, setSelected] = useState('')
+  const [select, setSelect] = useState('')
   const expensesAtStart = useStore((state) => state.expensesAtStart)
-  const [location] = useLocation()
+  const [location, setLocation] = useLocation()
 
   useEffect(() => {
-    async function fetchData() {
-      if (location === '/Dashboard') {
-        setSelected('All')
+    if (location === '/Dashboard') {
+      setSelect('')
+      async function updateExpenses() {
         try {
-          const updatedUser = await UserService.update(
-            {
-              user,
-              action: {
-                type: 'filterExpense',
-                selected: 'All',
-                expensesAtStart,
-              },
-            },
-            user.id,
-          )
+          const updatedUser = await UserService.getOneUser(user.id)
           setUser(updatedUser)
         } catch (err) {
-          setSelected('')
-          console.log(err)
+          setLocation('/')
+          console.error(err)
         }
       }
+      updateExpenses()
     }
-
-    fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
-  const handleChange = async ({ target }) => {
-    setSelected(target.value)
-    try {
-      const updatedUser = await UserService.update(
-        {
-          user,
-          action: {
-            type: 'filterExpense',
-            selected: target.value,
-            expensesAtStart,
-          },
-        },
-        user.id,
-      )
-      setUser(updatedUser)
-    } catch (err) {
-      setSelected('')
-      console.log(err)
+  const filterExpense = (user, select, expensesAtStart) => {
+    const filteredExpenses = user.preferences
+      .filter((p) => {
+        return p.category === select
+      })
+      .map((pref) => pref.expense)
+
+    if (select === 'All' || select === '') {
+      return { ...user, expenses: expensesAtStart }
+    } else if (filteredExpenses.length === 0) {
+      const newUser = { ...user, expenses: [] }
+      return newUser
+    } else {
+      return { ...user, expenses: filteredExpenses }
     }
+  }
+
+  const handleChange = async ({ target }) => {
+    setSelect(target.value)
+    const updatedUser = filterExpense(user, target.value, expensesAtStart)
+    setUser(updatedUser)
   }
 
   const options = ['Important', 'Intermediate', 'Casual', 'All']
@@ -69,7 +61,7 @@ function PriorityChanger({ user, setUser }) {
       options={options}
       title={'Priority'}
       handleChange={handleChange}
-      selected={selected}
+      selected={select}
       orientation="column"
     />
   )

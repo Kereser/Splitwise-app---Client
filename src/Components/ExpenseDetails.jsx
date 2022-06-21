@@ -40,7 +40,7 @@ function ExpenseDetails({ user, expense, rate }) {
           setUser(updatedUser)
         }
       } catch (erro) {
-        console.log('error: ', erro)
+        console.error('error: ', erro)
       }
     }
   }

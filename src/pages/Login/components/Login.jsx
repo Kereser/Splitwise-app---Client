@@ -32,7 +32,7 @@ const Login = () => {
       setLocation('/Dashboard')
       setUser(userLogged)
     } catch (err) {
-      console.log(err)
+      console.error(err)
       setAlert({
         type: 'error',
         message: 'Wrong credentials',

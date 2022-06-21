@@ -126,7 +126,6 @@ export default function NavBar({ notifications, user, setUser }) {
   }
 
   const handleTransferAccept = async (n) => {
-    console.log(n)
     const expenseId = n.expense.id
     const event = 'newNotification'
     const payload = {
