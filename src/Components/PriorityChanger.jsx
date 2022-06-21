@@ -13,12 +13,35 @@ function PriorityChanger({ user, setUser }) {
   const [location] = useLocation()
 
   useEffect(() => {
-    if (location === '/Dashboard') {
-      setSelected('')
+    async function fetchData() {
+      if (location === '/Dashboard') {
+        setSelected('All')
+        try {
+          const updatedUser = await UserService.update(
+            {
+              user,
+              action: {
+                type: 'filterExpense',
+                selected: 'All',
+                expensesAtStart,
+              },
+            },
+            user.id,
+          )
+          setUser(updatedUser)
+        } catch (err) {
+          setSelected('')
+          console.log(err)
+        }
+      }
     }
+
+    fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
   const handleChange = async ({ target }) => {
+    setSelected(target.value)
     try {
       const updatedUser = await UserService.update(
         {
@@ -31,8 +54,6 @@ function PriorityChanger({ user, setUser }) {
         },
         user.id,
       )
-      console.log(updatedUser)
-      setSelected(target.value)
       setUser(updatedUser)
     } catch (err) {
       setSelected('')

@@ -7,6 +7,7 @@ function CurrencyChanger() {
   const setToCurrency = useStore((state) => state.setToCurrency)
 
   const handleChange = ({ target }) => {
+    console.log(target, target.value)
     setToCurrency(target.value)
   }
 
